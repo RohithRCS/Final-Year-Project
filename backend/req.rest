@@ -1,0 +1,237 @@
+POST http://192.168.128.147:1234/api/signup HTTP/1.1
+Content-Type: application/json
+
+{
+    "Firstname":"Rohith",
+    "lastname":"C S",
+    "PhoneNumber": 9444292351,
+    "password":"rcs",
+    "Height": 177,
+    "weight": 75,
+    "DOB": "2004-05-04"
+}
+
+###
+POST http://192.168.150.147:1234/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "PhoneNumber": "9444292351",
+    "password":"rcs"
+}
+
+###
+POST http://192.168.150.147:1234/api/chat HTTP/1.1
+Content-Type: application/json
+
+{
+    "message": "why?",
+    "userId":"67dd1b7e9765a082c7d688d3"
+}
+
+###
+POST http://192.168.71.147:1234/api/songs HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Alone",
+  "artist": "Unknown Artist",
+  "album": "Relaxing Instrumentals",
+  "genre": "Instrumental",
+  "duration": 180,
+  "releaseYear": 2024,
+  "audioUrl": "http://192.168.150.147:1234/songs/alone-296348.mp3",
+  "coverImageUrl": "https://example.com/cover.jpg",
+  "createdAt": "2025-04-03T12:00:00Z"
+}
+
+###
+POST http://192.168.151.81:1234/api/songs/scan-assets HTTP/1.1
+Content-Type: application/json
+
+###
+GET http://192.168.227.81:1234/api/songs/
+
+###
+POST http://192.168.190.147:1234/api/location HTTP/1.1
+Content-Type: application/json
+
+{
+  "userId": "67dd1b7e9765a082c7d688d3",
+  "latitude": 12.9716,
+  "longitude": 77.5946
+}
+
+
+###
+POST http://192.168.190.147:1234/api/location HTTP/1.1
+Content-Type: application/json
+
+{
+  "userId": "67eb80b6dadf54dff7359b52",
+  "latitude": 12.9722,
+  "longitude": 77.5932
+}
+
+###
+POST http://192.168.190.147:1234/api/location HTTP/1.1
+Content-Type: application/json
+
+{
+  "userId": "67eb8a6fdadf54dff7359b57",
+  "latitude": 13.0827,
+  "longitude": 80.2707
+}
+
+###
+GET http://192.168.190.147:6000/api/nearby?latitude=12.9716&longitude=77.5946&radius=1000
+
+### Initialize games in the database
+GET http://192.168.190.147:6000/api/game
+
+###
+GET http://192.168.109.81:1234/api/game
+
+###
+GET http://192.168.109.81:1234/api/game/681c3998f495a501693dce15
+Content-Type: application/json
+
+###
+GET http://192.168.109.81:1234/api/game/67e0fb2cf4d7207d44f6adf5/favoriteGames
+
+### Add a game to a user's favorites
+POST http://192.168.109.81:1234/api/game/67e0fb2cf4d7207d44f6adf5/favoriteGames/681c3998f495a501693dce15
+Content-Type: application/json
+
+###
+POST http://192.168.109.81:1234/api/meditation/67e0fb2cf4d7207d44f6adf5/681c69bc48d4f7a65bdb89e5
+Content-Type: application/json
+
+###
+GET http://192.168.109.81:1234/api/meditation/67e0fb2cf4d7207d44f6adf5
+
+###
+GET http://192.168.109.81:1234/api/meditation/check/67e0fb2cf4d7207d44f6adf5/681c69bc48d4f7a65bdb89e6
+
+
+###
+http://192.168.109.81:1234/api/meditation
+
+
+###
+GET http://192.168.182.81:1234/api/exercise/all
+Content-Type: application/json
+
+###
+POST http://192.168.182.81:1234/api/exercise/681cc1081d60ac487b10cd70
+Content-Type: application/json
+
+{
+  "userId": "67e0fb2cf4d7207d44f6adf5"
+}
+
+###
+GET http://192.168.182.81:1234/api/exercise/favorites?userId=67e0fb2cf4d7207d44f6adf5
+Content-Type: application/json
+
+###
+GET http://192.168.182.81:1234/api/exercise/check/681cc1081d60ac487b10cd71?userId=67e0fb2cf4d7207d44f6adf5
+Content-Type: application/json
+
+### Update user profile - Basic info
+PATCH http://192.168.227.72:1234/api/edit/67e0fb2cf4d7207d44f6adf5
+Content-Type: application/json
+
+{
+  "Firstname": "shakthi",
+  "lastname": "S",
+  "Height": 175,
+  "weight": 70
+}
+
+### Get preferences for a user by userId
+GET http://192.168.227.72:1234/api/userPreference?userId=67e0fb2cf4d7207d44f6adf5
+Content-Type: application/json
+
+### Create or update preferences for a user
+POST http://192.168.227.72:1234/api/userPreference
+Content-Type: application/json
+
+{
+  "userId": "67e0fb2cf4d7207d44f6adf5",
+  "likesCats": true,
+  "likesDogs": false,
+  "notificationFrequency": "Daily"
+}
+
+### Update preferences by userId (PATCH fallback)
+PATCH http://192.168.227.72:1234/api/userPreference/user/67e0fb2cf4d7207d44f6adf5
+Content-Type: application/json
+
+{
+  "likesCats": false,
+  "notificationFrequency": "Weekly"
+}
+
+
+
+### POST: Upload Audio for Transcription -- working
+POST http://localhost:1234/api/transcribe HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="audio"; filename="female-voice-and-this-is-how-it-ends-26030.mp3"
+Content-Type: audio/mp3
+
+< C:/Users/rohit/ElderAssistMain/backend/female-voice-and-this-is-how-it-ends-26030.mp3
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Get all reminders
+GET http://localhost:1234/api/reminder
+Content-Type: application/json
+
+### Create a new reminder
+POST http://localhost:1234/api/reminder
+Content-Type: application/json
+
+{
+  "title": "Take Medicine",
+  "description": "Blood pressure tablet",
+  "time": "08:00",
+  "date": "2025-05-15",
+  "repeat": true,
+  "repeatDays": ["Monday", "Wednesday", "Friday"],
+  "userId": "67e0fb2cf4d7207d44f6adf5",
+  "expoPushToken": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]"
+}
+
+
+### Get reminder by ID
+GET http://localhost:1234/api/reminder/68243d0c1d0d13e72981bd4f
+Content-Type: application/json
+
+
+
+### Get today's reminders
+GET http://localhost:1234/api/reminder/today?userId=67e0fb2cf4d7207d44f6adf5
+Content-Type: application/json
+
+### Toggle reminder active status
+PATCH http://localhost:1234/api/reminder/68243d0c1d0d13e72981bd4f/toggle
+Content-Type: application/json
+
+
+### Update a reminder
+PUT http://localhost:1234/api/reminder/68243d0c1d0d13e72981bd4f
+Content-Type: application/json
+
+{
+  "title": "Updated Reminder",
+  "description": "New description",
+  "time": "10:00",
+  "date": "2025-05-16",
+  "repeat": false,
+  "repeatDays": [],
+  "isActive": true
+}
+

@@ -1,0 +1,17 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+, "app/components/favouritePlaylist.jsx", "app/components/HomeScreen.jsx", "app/components/config.ts", "app/components/Reminderscreen.jsx", "app/components/Prefrences.jsx", "app/index.jsx", "app/components/settings.jsx", "app/components/chatb.tsx", "app/components/LocationBasedchat.jsx"  ]
+}
