@@ -1008,7 +1008,7 @@ useEffect(() => {
                     onPress={() => navigateToPreferences('mealPreferences')}
                   >
                     <Ionicons name="settings-outline" size={18} color="#FFF" style={{marginRight: 8}} />
-                    <Text style={styles.editButtonText}>View and edit Medication Preferences</Text>
+                    <Text style={styles.editButtonText}>View and Edit Medication Preferences</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -1094,7 +1094,7 @@ useEffect(() => {
                     onPress={() => navigateToPreferences('sleepPreferences')}
                   >
                     <Ionicons name="settings-outline" size={18} color="#FFF" style={{marginRight: 8}} />
-                    <Text style={styles.editButtonText}>View and edit Sleep Preferences</Text>
+                    <Text style={styles.editButtonText}>View and Edit Sleep Preferences</Text>
                   </TouchableOpacity>
                 </View>
               )}

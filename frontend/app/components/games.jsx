@@ -134,9 +134,7 @@ const GamesScreen = () => {
   // Static games as fallback
   const getStaticGames = () => {
     return [
-      { _id: '1', title: 'Flappy Bird', route: 'FlappyBird', emoji: '🐦' },
       { _id: '2', title: 'Memory Game', route: 'MemoryGame', emoji: '🧠' },
-      { _id: '3', title: 'Bird Game', route: 'SnakeGame', emoji: '🕊️' },
       { _id: '4', title: 'Tetris', route: 'Tetris', emoji: '🧩' },
       { _id: '5', title: 'Color Tap', route: 'Mole', emoji: '🎨' },
       { _id: '6', title: 'Balloon Pop', route: 'Balloon', emoji: '🎈' },
@@ -345,7 +343,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 12,
     borderRadius: 8,
-    elevation: 2,
+    elevation: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
@@ -380,7 +378,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },

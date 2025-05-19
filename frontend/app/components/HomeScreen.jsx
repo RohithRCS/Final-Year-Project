@@ -11,6 +11,7 @@ import { useAuth } from './AuthContext';
 import { BASE_URL } from './config';
 import EmergencyContactButton from './Emegencybutton';
 import { useTheme } from './ThemeContext';
+import YoutubePlayer from 'react-native-youtube-iframe';
 
 const { width } = Dimensions.get('window');
 
@@ -436,7 +437,7 @@ const fetchReminders = async () => {
           <Text style={styles.emptyText}>No favorite games yet!</Text>
           <TouchableOpacity 
             style={styles.addButton}
-            onPress={() => navigation.navigate('GamesStack')}
+            onPress={() => navigation.navigate('GameStack')}
           >
             <Text style={styles.addButtonText}>Browse Games</Text>
           </TouchableOpacity>
@@ -705,6 +706,16 @@ const fetchReminders = async () => {
     color: theme.text,
     marginHorizontal: 20,
     marginTop: 16,
+    paddingLeft:0,
+    marginBottom: 12,
+    marginLeft:0,
+  },
+  section_Title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: theme.text,
+    marginHorizontal: 20,
+    marginTop: 16,
     marginBottom: 12,
   },
   moodContainer: {
@@ -719,7 +730,8 @@ const fetchReminders = async () => {
     paddingVertical: 12,
     paddingHorizontal: 8,
     borderRadius: 16,
-    width: width / 5 - 8,
+    width: width / 5 - 12,
+    height:75,
     shadowColor: theme.isDarkMode ? '#000' : '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: theme.isDarkMode ? 0.2 : 0.05,
@@ -1038,7 +1050,6 @@ const fetchReminders = async () => {
         <View style={styles.songDetails}>
           <Text style={styles.songTitle} numberOfLines={1}>{song.title}</Text>
           <Text style={styles.songArtist} numberOfLines={1}>{song.artist}</Text>
-          {song.duration && <Text style={styles.songDuration}>{song.duration}</Text>}
         </View>
         <TouchableOpacity
           style={styles.removeButton}
@@ -1084,18 +1095,6 @@ const fetchReminders = async () => {
         >
           {favoriteSongs.slice(0, 5).map(renderSongItem)}
         </ScrollView>
-        
-        {favoriteSongs.length > 0 && (
-          <TouchableOpacity 
-            style={styles.viewAllButton}
-            onPress={navigateToPlaylist}
-          >
-            <Text style={styles.viewAllButtonText}>
-              View All and Play ({favoriteSongs.length})
-            </Text>
-            <Ionicons name="play-circle-outline" size={20} color="#4285F4" />
-          </TouchableOpacity>
-        )}
       </>
     );
   };
@@ -1154,7 +1153,7 @@ const fetchReminders = async () => {
           </LinearGradient>
         </TouchableOpacity>
         
-        <Text style={styles.sectionTitle}>How’s the mood today?</Text>
+        <Text style={styles.section_Title}>How’s the mood today?</Text>
         <View style={styles.moodContainer}>
           <TouchableOpacity 
             style={[styles.moodItem, { backgroundColor: theme.cardBackground }]} 
@@ -1202,7 +1201,7 @@ const fetchReminders = async () => {
   <View style={styles.sectionHeader}>
     <Text style={styles.sectionTitle}>Upcoming Reminders</Text>
     <TouchableOpacity onPress={() => navigation.navigate('MainApp', { screen: 'Reminders' })}>
-      <Ionicons name="add-circle-outline" size={24} color="#4285F4" />
+      <Ionicons name="add-circle-outline" size={24} color="#4285F4" style={{ marginTop: 4 }} />
     </TouchableOpacity>
   </View>
 
@@ -1246,6 +1245,16 @@ const fetchReminders = async () => {
         <View style={styles.favoritesSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Favorite Songs</Text>
+            {favoriteSongs.length > 0 && (
+          <TouchableOpacity 
+            style={styles.viewAllButton}
+            onPress={navigateToPlaylist}
+          >
+            <Text style={styles.viewAllButtonText}>
+              View All >>
+            </Text>
+          </TouchableOpacity>
+        )}
           </View>
           
           {renderFavoritesSection()}

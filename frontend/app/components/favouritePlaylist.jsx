@@ -21,8 +21,9 @@ import Slider from '@react-native-community/slider';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { AppState } from 'react-native';
+import { useTheme } from './ThemeContext'; // Import the theme hook
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 // Import all cover images statically
 const COVER_IMAGES = {
@@ -51,6 +52,9 @@ const FavoritePlaylist = ({ route, navigation }) => {
   const [isSeeking, setIsSeeking] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [songAssets, setSongAssets] = useState({});
+  
+  // Theme
+  const { theme } = useTheme();
   
   // Refs
   const playbackPositionTimer = useRef(null);
@@ -407,7 +411,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://192.168.227.81:1234/api/favorites?userId=${currentUser.userId}`,
+        `http://192.168.91.81:1234/api/favorites?userId=${currentUser.userId}`,
         { headers: getAuthHeader() }
       );
       
@@ -438,7 +442,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
     }
     
     try {
-      await axios.delete(`http://192.168.227.81:1234/api/favorites/${songId}`, {
+      await axios.delete(`http://192.168.91.81:1234/api/favorites/${songId}`, {
         headers: getAuthHeader(),
         data: { userId: currentUser.userId }
       });
@@ -495,28 +499,28 @@ const FavoritePlaylist = ({ route, navigation }) => {
       <TouchableOpacity
         key={item._id}
         style={[
-          styles.songItem,
-          isActive && styles.activeSong
+          styles(theme).songItem,
+          isActive && styles(theme).activeSong
         ]}
         onPress={() => playSong(item)}
       >
         <Image
           source={item.albumCover}
-          style={styles.albumCover}
+          style={styles(theme).albumCover}
           defaultSource={DEFAULT_COVER}
         />
-        <View style={styles.songInfo}>
-          <Text style={[styles.songTitle, isActive && styles.activeText]}>{item.title}</Text>
-          <Text style={styles.songArtist}>{item.artist}</Text>
-          <Text style={styles.songDuration}>{formatTime(item.duration)}</Text>
+        <View style={styles(theme).songInfo}>
+          <Text style={[styles(theme).songTitle, isActive && styles(theme).activeText]}>{item.title}</Text>
+          <Text style={styles(theme).songArtist}>{item.artist}</Text>
+          <Text style={styles(theme).songDuration}>{formatTime(item.duration)}</Text>
         </View>
-        <View style={styles.actions}>
+        <View style={styles(theme).actions}>
           {isActive && (
             <Ionicons 
               name={isPlaying ? "pause" : "play"} 
               size={24} 
               color="#1DB954" 
-              style={styles.playIcon}
+              style={styles(theme).playIcon}
             />
           )}
           <TouchableOpacity 
@@ -538,27 +542,27 @@ const FavoritePlaylist = ({ route, navigation }) => {
     if (!currentSong) return null;
 
     return (
-      <View style={styles.expandedPlayerContainer}>
+      <View style={styles(theme).expandedPlayerContainer}>
         <TouchableOpacity 
-          style={styles.expandedPlayerCloseBtn}
+          style={styles(theme).expandedPlayerCloseBtn}
           onPress={toggleExpandedPlayer}
         >
-          <Ionicons name="chevron-down" size={28} color="white" />
+          <Ionicons name="chevron-down" size={28} color={theme.text} />
         </TouchableOpacity>
         
-        <View style={styles.expandedPlayerContent}>
+        <View style={styles(theme).expandedPlayerContent}>
           <Image 
             source={currentSong.albumCover}
-            style={styles.expandedCover}
+            style={styles(theme).expandedCover}
             defaultSource={DEFAULT_COVER}
           />
           
-          <View style={styles.expandedSongInfo}>
-            <Text style={styles.expandedTitle}>{currentSong.title}</Text>
-            <Text style={styles.expandedArtist}>{currentSong.artist}</Text>
+          <View style={styles(theme).expandedSongInfo}>
+            <Text style={styles(theme).expandedTitle}>{currentSong.title}</Text>
+            <Text style={styles(theme).expandedArtist}>{currentSong.artist}</Text>
             <TouchableOpacity 
               onPress={(e) => toggleFavorite(currentSong._id, e)}
-              style={styles.expandedFavoriteButton}
+              style={styles(theme).expandedFavoriteButton}
             >
               <Ionicons 
                 name="heart" 
@@ -568,9 +572,9 @@ const FavoritePlaylist = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
           
-          <View style={styles.progressContainer}>
+          <View style={styles(theme).progressContainer}>
             <Slider
-              style={styles.progressBar}
+              style={styles(theme).progressBar}
               minimumValue={0}
               maximumValue={duration}
               value={position}
@@ -580,26 +584,26 @@ const FavoritePlaylist = ({ route, navigation }) => {
               maximumTrackTintColor="#555"
               thumbTintColor="#1DB954"
             />
-            <View style={styles.timeContainer}>
-              <Text style={styles.timeText}>{formatTime(position)}</Text>
-              <Text style={styles.timeText}>{formatTime(duration)}</Text>
+            <View style={styles(theme).timeContainer}>
+              <Text style={styles(theme).timeText}>{formatTime(position)}</Text>
+              <Text style={styles(theme).timeText}>{formatTime(duration)}</Text>
             </View>
           </View>
           
-          <View style={styles.expandedControls}>
+          <View style={styles(theme).expandedControls}>
             <TouchableOpacity 
-              style={styles.expandedControlBtn}
+              style={styles(theme).expandedControlBtn}
               onPress={playPreviousSong}
             >
-              <Ionicons name="play-skip-back" size={32} color="white" />
+              <Ionicons name="play-skip-back" size={32} color={theme.text} />
             </TouchableOpacity>
             
             <TouchableOpacity 
-              style={styles.expandedPlayButton}
+              style={styles(theme).expandedPlayButton}
               onPress={togglePlayPause}
             >
               {isLoading ? (
-                <ActivityIndicator size="large" color="white" />
+                <ActivityIndicator size="large" color={theme.text} />
               ) : (
                 <Ionicons 
                   name={isPlaying ? "pause" : "play"} 
@@ -610,10 +614,10 @@ const FavoritePlaylist = ({ route, navigation }) => {
             </TouchableOpacity>
             
             <TouchableOpacity 
-              style={styles.expandedControlBtn}
+              style={styles(theme).expandedControlBtn}
               onPress={playNextSong}
             >
-              <Ionicons name="play-skip-forward" size={32} color="white" />
+              <Ionicons name="play-skip-forward" size={32} color={theme.text} />
             </TouchableOpacity>
           </View>
         </View>
@@ -623,43 +627,43 @@ const FavoritePlaylist = ({ route, navigation }) => {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.loadingContainer}>
+      <SafeAreaView style={styles(theme).loadingContainer}>
         <ActivityIndicator size="large" color="#1DB954" />
-        <Text style={styles.loadingText}>Loading your favorites...</Text>
+        <Text style={styles(theme).loadingText}>Loading your favorites...</Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>  
+    <SafeAreaView style={styles(theme).container}>  
       {/* Expanded Player */}
       {expanded && renderExpandedPlayer()}
       
       {/* Main Content Area */}
       {!expanded && (
-        <View style={styles.listContainer}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color="white" />
+        <View style={styles(theme).listContainer}>
+          <View style={styles(theme).header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles(theme).backButton}>
+              <Ionicons name="arrow-back" size={24} color={theme.text} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Favorite Songs</Text>
-            <TouchableOpacity onPress={fetchFavoriteSongs} style={styles.refreshButton}>
+            <Text style={styles(theme).headerTitle}>Favorite Songs</Text>
+            <TouchableOpacity onPress={fetchFavoriteSongs} style={styles(theme).refreshButton}>
               <Ionicons name="refresh" size={24} color="#1DB954" />
             </TouchableOpacity>
           </View>
 
           {favoriteSongs.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Ionicons name="heart-dislike" size={48} color="#555" />
-              <Text style={styles.emptyText}>No favorite songs yet</Text>
-              <Text style={styles.emptySubText}>Tap the heart icon on songs to add them here</Text>
+            <View style={styles(theme).emptyContainer}>
+              <Ionicons name="heart-dislike" size={48} color={theme.subText} />
+              <Text style={styles(theme).emptyText}>No favorite songs yet</Text>
+              <Text style={styles(theme).emptySubText}>Tap the heart icon on songs to add them here</Text>
             </View>
           ) : (
             <FlatList
               data={favoriteSongs}
               renderItem={renderSongItem}
               keyExtractor={(item) => item._id}
-              contentContainerStyle={styles.songList}
+              contentContainerStyle={styles(theme).songList}
             />
           )}
         </View>
@@ -667,49 +671,49 @@ const FavoritePlaylist = ({ route, navigation }) => {
       
       {/* Player Controls */}
       {!expanded && currentSong && (
-        <View style={styles.playerBar}>
+        <View style={styles(theme).playerBar}>
           <TouchableOpacity 
-            style={styles.playerContent}
+            style={styles(theme).playerContent}
             onPress={toggleExpandedPlayer}
           >
             <Image 
               source={currentSong.albumCover}
-              style={styles.miniCover}
+              style={styles(theme).miniCover}
               defaultSource={DEFAULT_COVER}
             />
             
-            <View style={styles.songDetails}>
-              <Text style={styles.playerTitle}>{currentSong.title}</Text>
-              <Text style={styles.playerArtist}>{currentSong.artist}</Text>
+            <View style={styles(theme).songDetails}>
+              <Text style={styles(theme).playerTitle}>{currentSong.title}</Text>
+              <Text style={styles(theme).playerArtist}>{currentSong.artist}</Text>
             </View>
             
-            <View style={styles.controls}>
-              <TouchableOpacity onPress={playPreviousSong} style={styles.controlButton}>
-                <Ionicons name="play-skip-back" size={28} color="white" />
+            <View style={styles(theme).controls}>
+              <TouchableOpacity onPress={playPreviousSong} style={styles(theme).controlButton}>
+                <Ionicons name="play-skip-back" size={28} color={theme.text} />
               </TouchableOpacity>
               
-              <TouchableOpacity style={styles.playButton} onPress={togglePlayPause}>
+              <TouchableOpacity style={styles(theme).playButton} onPress={togglePlayPause}>
                 {isLoading ? (
-                  <ActivityIndicator size="small" color="white" />
+                  <ActivityIndicator size="small" color={theme.text} />
                 ) : (
                   <Ionicons 
                     name={isPlaying ? "pause" : "play"} 
                     size={28} 
-                    color="white" 
+                    color={theme.text} 
                   />
                 )}
               </TouchableOpacity>
               
-              <TouchableOpacity onPress={playNextSong} style={styles.controlButton}>
-                <Ionicons name="play-skip-forward" size={28} color="white" />
+              <TouchableOpacity onPress={playNextSong} style={styles(theme).controlButton}>
+                <Ionicons name="play-skip-forward" size={28} color={theme.text} />
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
           
-          <View style={styles.miniProgressContainer}>
+          <View style={styles(theme).miniProgressContainer}>
             <View 
               style={[
-                styles.miniProgress, 
+                styles(theme).miniProgress, 
                 { width: `${(position / (duration || 1)) * 100}%` }
               ]} 
             />
@@ -720,257 +724,364 @@ const FavoritePlaylist = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  // Main container
+const styles = (theme) => StyleSheet.create({
+  // Main Container
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: theme.background,
   },
-  listContainer: {
-    flex: 1,
-    paddingBottom: 70, // Space for player bar
-  },
+  
+  // Loading Container
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#121212',
-  },
-  loadingText: {
-    color: '#b3b3b3',
-    marginTop: 15,
-    fontSize: 16,
+    backgroundColor: theme.background,
   },
   
-  // Header styles
+  loadingText: {
+    color: theme.text,
+    fontSize: 16,
+    marginTop: 16,
+    fontWeight: '500',
+  },
+  
+  // List Container
+  listContainer: {
+    flex: 1,
+    backgroundColor: theme.background,
+  },
+  
+  // Header Styles
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: theme.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  backButton: {
-    padding: 5,
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  refreshButton: {
-    padding: 5,
+    borderBottomColor: theme.border,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   
-  // Empty state
+  backButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: theme.cardBackground,
+  },
+  
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: theme.text,
+    flex: 1,
+    textAlign: 'center',
+    marginHorizontal: 16,
+  },
+  
+  refreshButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: theme.cardBackground,
+  },
+  
+  // Song List Styles
+  songList: {
+    paddingBottom: 120, // Extra space for player bar
+  },
+  
+  songItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: theme.cardBackground,
+    marginHorizontal: 16,
+    marginVertical: 4,
+    borderRadius: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  
+  activeSong: {
+    backgroundColor: theme.activeBackground,
+    borderWidth: 1,
+    borderColor: '#1DB954',
+  },
+  
+  albumCover: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 16,
+  },
+  
+  songInfo: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  
+  songTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.text,
+    marginBottom: 4,
+  },
+  
+  activeText: {
+    color: '#1DB954',
+  },
+  
+  songArtist: {
+    fontSize: 14,
+    color: theme.subText,
+    marginBottom: 2,
+  },
+  
+  songDuration: {
+    fontSize: 12,
+    color: theme.subText,
+  },
+  
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  
+  playIcon: {
+    marginRight: 4,
+  },
+  
+  // Empty State Styles
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 40,
   },
+  
   emptyText: {
-    color: 'white',
     fontSize: 18,
     fontWeight: '600',
-    marginTop: 15,
+    color: theme.text,
+    marginTop: 16,
+    marginBottom: 8,
   },
+  
   emptySubText: {
-    color: '#b3b3b3',
     fontSize: 14,
+    color: theme.subText,
     textAlign: 'center',
-    marginTop: 5,
-    paddingHorizontal: 30,
+    lineHeight: 20,
   },
   
-  // Song list
-  songList: {
-    paddingHorizontal: 15,
-    paddingBottom: 20,
-  },
-  songItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#282828',
-  },
-  activeSong: {
-    backgroundColor: '#282828',
-  },
-  albumCover: {
-    width: 50,
-    height: 50,
-    borderRadius: 4,
-    marginRight: 15,
-  },
-  songInfo: {
-    flex: 1,
-  },
-  songTitle: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  activeText: {
-    color: '#1DB954',
-  },
-  songArtist: {
-    color: '#b3b3b3',
-    fontSize: 14,
-    marginTop: 2,
-  },
-  songDuration: {
-    color: '#b3b3b3',
-    fontSize: 12,
-    marginTop: 2,
-  },
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  playIcon: {
-    marginRight: 15,
-  },
-  
-  // Mini Player
+  // Player Bar Styles
   playerBar: {
-    height: 64,
-    backgroundColor: '#282828',
-    borderTopWidth: 1,
-    borderTopColor: '#333',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
+    backgroundColor: theme.surface,
+    borderTopWidth: 1,
+    borderTopColor: theme.border,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
+  
   playerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    height: '100%',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
+  
   miniCover: {
-    width: 48,
-    height: 48,
-    borderRadius: 4,
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 12,
   },
+  
   songDetails: {
     flex: 1,
-    marginLeft: 15,
+    justifyContent: 'center',
   },
+  
   playerTitle: {
-    color: 'white',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
+    color: theme.text,
+    marginBottom: 2,
   },
+  
   playerArtist: {
-    color: '#b3b3b3',
     fontSize: 12,
+    color: theme.subText,
   },
+  
   controls: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
   },
+  
   controlButton: {
-    padding: 8,
+    padding: 6,
   },
+  
   playButton: {
     padding: 8,
+    backgroundColor: '#1DB954',
+    borderRadius: 25,
   },
+  
   miniProgressContainer: {
-    height: 2,
-    backgroundColor: '#555',
-    width: '100%',
-    position: 'absolute',
-    top: 0,
+    height: 3,
+    backgroundColor: theme.border,
   },
+  
   miniProgress: {
-    height: 2,
+    height: '100%',
     backgroundColor: '#1DB954',
   },
   
-  // Expanded Player
+  // Expanded Player Styles
   expandedPlayerContainer: {
-    flex: 1,
-    backgroundColor: '#121212',
-    paddingTop: 30,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: theme.background,
+    zIndex: 1000,
   },
+  
   expandedPlayerCloseBtn: {
-    padding: 15,
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
+    padding: 16,
+    marginTop: 8,
   },
+  
   expandedPlayerContent: {
     flex: 1,
+    paddingHorizontal: 32,
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingHorizontal: 30,
-    paddingBottom: 50,
+    justifyContent: 'space-between',
+    paddingBottom: 40,
   },
+  
   expandedCover: {
-    width: 300,
-    height: 300,
-    borderRadius: 8,
-    marginBottom: 30,
+    width: width * 0.8,
+    height: width * 0.8,
+    borderRadius: 20,
+    marginTop: 20,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
+  
   expandedSongInfo: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginVertical: 32,
   },
+  
   expandedTitle: {
-    color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
+    color: theme.text,
     textAlign: 'center',
     marginBottom: 8,
   },
+  
   expandedArtist: {
-    color: '#b3b3b3',
     fontSize: 18,
+    color: theme.subText,
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 16,
   },
+  
   expandedFavoriteButton: {
-    padding: 10,
+    padding: 12,
+    backgroundColor: theme.cardBackground,
+    borderRadius: 30,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
+  
+  // Progress Bar Styles
   progressContainer: {
     width: '100%',
-    marginBottom: 30,
+    marginVertical: 20,
   },
+  
   progressBar: {
     width: '100%',
     height: 40,
   },
+  
   timeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 10,
+    marginTop: 8,
   },
+  
   timeText: {
-    color: '#b3b3b3',
     fontSize: 14,
+    color: theme.subText,
+    fontWeight: '500',
   },
+  
+  // Expanded Controls
   expandedControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     width: '100%',
+    paddingHorizontal: 40,
+    marginTop: 32,
   },
+  
   expandedControlBtn: {
-    padding: 20,
+    padding: 16,
+    backgroundColor: theme.cardBackground,
+    borderRadius: 35,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
+  
   expandedPlayButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 80,
+    height: 80,
     backgroundColor: '#1DB954',
-    alignItems: 'center',
+    borderRadius: 40,
     justifyContent: 'center',
-    marginHorizontal: 30,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
 });
 
-export default FavoritePlaylist;
+export default FavoritePlaylist

@@ -113,20 +113,14 @@ const AuthStackScreen: React.FC = () => {
         name="Login" 
         component={LoginScreen} 
         options={{ 
-          headerShown: true, 
-          title: 'Login',
-          headerStyle: { backgroundColor: theme.primary },
-          headerTintColor: '#fff'
+          headerShown: false
         }} 
       />
       <AuthStack.Screen 
         name="Register" 
         component={RegisterScreen} 
         options={{ 
-          headerShown: true, 
-          title: 'Register',
-          headerStyle: { backgroundColor: theme.primary },
-          headerTintColor: '#fff'
+          headerShown: false,
         }} 
       />
     </AuthStack.Navigator>
@@ -164,6 +158,7 @@ const MainAppTabNavigator: React.FC = () => {
   
   return (
     <Tab.Navigator
+    initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = 'home';
@@ -266,6 +261,7 @@ const AppContent: React.FC = () => {
               component={GetPreferences} 
               options={{ 
                 title: 'Set Your Preferences',
+                headerStyle: { backgroundColor: '#4285F4' },
                 headerLeft: () => null // Prevent going back
               }} 
             />
@@ -346,7 +342,7 @@ const AppContent: React.FC = () => {
               <MainStack.Screen 
                 name="Support" 
                 component={support} 
-                options={{ title: 'Emergency Contact' }} 
+                options={{ title: 'Help & Support' }} 
               />
               
               <MainStack.Screen 

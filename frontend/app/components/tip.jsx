@@ -283,16 +283,7 @@ const HealthTipsApp = () => {
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: theme.text }]}>Daily Health Tips</Text>
         <View style={styles.headerButtons}>
-          <TouchableOpacity
-            style={[styles.iconButton, { backgroundColor: theme.isDarkMode ? '#333' : '#F0F0F0' }]}
-            onPress={toggleTheme}
-          >
-            <MaterialCommunityIcons 
-              name={isDarkMode ? "weather-sunny" : "weather-night"} 
-              size={22} 
-              color={theme.text} 
-            />
-          </TouchableOpacity>
+         
           
           <TouchableOpacity 
             style={[styles.iconButton, { backgroundColor: theme.isDarkMode ? '#333' : '#F0F0F0' }]}

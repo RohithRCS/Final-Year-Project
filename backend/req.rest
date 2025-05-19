@@ -46,7 +46,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://192.168.151.81:1234/api/songs/scan-assets HTTP/1.1
+POST https://elder-assist-neww.onrender.com/api/songs/scan-assets HTTP/1.1
 Content-Type: application/json
 
 ###

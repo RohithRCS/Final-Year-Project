@@ -81,7 +81,7 @@ ${message}
       `;
       
       // Create the mailto URL with all parameters
-      const mailtoUrl = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(formattedMessage)}&cc=${encodeURIComponent(email)}`;
+      const mailtoUrl = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(formattedMessage)}}`;
       
       // Check if the device can handle the mailto URL
       const canOpen = await Linking.canOpenURL(mailtoUrl);

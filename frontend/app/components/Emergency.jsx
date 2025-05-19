@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useAuth } from './AuthContext';
 import { useTheme } from './ThemeContext'; // Import the theme hook
+import { Ionicons } from '@expo/vector-icons';
 
 // Import icons from an asset folder (you'll need to add these to your project)
 const ICONS = {
@@ -277,7 +278,7 @@ const EmergencyContactDisplay = () => {
       tintColor: theme.primary,
     },
     noContactText: {
-      fontSize: 22,
+      fontSize: 18,
       fontWeight: 'bold',
       color: theme.text,
       marginBottom: 12,
@@ -380,7 +381,7 @@ const EmergencyContactDisplay = () => {
       fontSize: 20,
       fontWeight: 'bold',
       color: '#FFFFFF',
-      marginLeft: 8,
+      marginLeft: -20,
     },
     cancelButton: {
       backgroundColor: theme.divider,
@@ -396,7 +397,9 @@ const EmergencyContactDisplay = () => {
       fontSize: 20,
       fontWeight: '600',
       color: theme.subText,
-      marginLeft: 8,
+      paddingLeft:0,
+      alignItems:'center',
+      marginLeft:-20,
     },
     buttonIcon: {
       width: 18,
@@ -596,9 +599,7 @@ const EmergencyContactDisplay = () => {
             </>
           ) : (
             <View style={dynamicStyles.noContactContainer}>
-              <View style={dynamicStyles.noContactIcon}>
-                <Image source={ICONS.ALERT} style={dynamicStyles.alertIcon} />
-              </View>
+              <Ionicons name="alert-circle" size={50} color="red" />
               <Text style={dynamicStyles.noContactText}>No emergency contact found</Text>
               <Text style={dynamicStyles.noContactSubtext}>
                 Please add an emergency contact for your safety.

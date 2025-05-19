@@ -73,7 +73,6 @@ const PreferencesScreen = () => {
     { title: 'Welcome', isComplete: () => true },
     { title: 'Medication Timing', isComplete: () => true },
     { title: 'Meal Times', isComplete: () => hasMealTimesComplete() },
-    { title: 'Other Preferences', isComplete: () => true },
     { title: 'Finish', isComplete: () => true },
   ];
   
@@ -267,7 +266,7 @@ const PreferencesScreen = () => {
         <Switch
           value={hasMedicationBeforeMeals}
           onValueChange={() => setHasMedicationBeforeMeals(!hasMedicationBeforeMeals)}
-          trackColor={{ false: "#d1d1d1", true: "#4CAF50" }}
+          trackColor={{ false: "#d1d1d1", true: "#4285F4" }}
           thumbColor="#f4f3f4"
         />
       </View>
@@ -277,7 +276,7 @@ const PreferencesScreen = () => {
         <Switch
           value={hasMedicationAfterMeals}
           onValueChange={() => setHasMedicationAfterMeals(!hasMedicationAfterMeals)}
-          trackColor={{ false: "#d1d1d1", true: "#4CAF50" }}
+          trackColor={{ false: "#d1d1d1", true: "#4285F4" }}
           thumbColor="#f4f3f4"
         />
       </View>
@@ -319,7 +318,7 @@ const PreferencesScreen = () => {
               <Switch
                 value={mealsWithMedication.breakfast.before}
                 onValueChange={() => toggleMealMedication('breakfast', 'before')}
-                trackColor={{ false: "#d1d1d1", true: "#4CAF50" }}
+                trackColor={{ false: "#d1d1d1", true: "#4285F4" }}
                 thumbColor="#f4f3f4"
               />
             </View>
@@ -337,7 +336,7 @@ const PreferencesScreen = () => {
               <Switch
                 value={mealsWithMedication.breakfast.after}
                 onValueChange={() => toggleMealMedication('breakfast', 'after')}
-                trackColor={{ false: "#d1d1d1", true: "#4CAF50" }}
+                trackColor={{ false: "#d1d1d1", true: "#4285F4" }}
                 thumbColor="#f4f3f4"
               />
             </View>
@@ -370,7 +369,7 @@ const PreferencesScreen = () => {
               <Switch
                 value={mealsWithMedication.lunch.before}
                 onValueChange={() => toggleMealMedication('lunch', 'before')}
-                trackColor={{ false: "#d1d1d1", true: "#4CAF50" }}
+                trackColor={{ false: "#d1d1d1", true: "#4285F4" }}
                 thumbColor="#f4f3f4"
               />
             </View>
@@ -388,7 +387,7 @@ const PreferencesScreen = () => {
               <Switch
                 value={mealsWithMedication.lunch.after}
                 onValueChange={() => toggleMealMedication('lunch', 'after')}
-                trackColor={{ false: "#d1d1d1", true: "#4CAF50" }}
+                trackColor={{ false: "#d1d1d1", true: "#4285F4" }}
                 thumbColor="#f4f3f4"
               />
             </View>
@@ -421,7 +420,7 @@ const PreferencesScreen = () => {
               <Switch
                 value={mealsWithMedication.dinner.before}
                 onValueChange={() => toggleMealMedication('dinner', 'before')}
-                trackColor={{ false: "#d1d1d1", true: "#4CAF50" }}
+                trackColor={{ false: "#d1d1d1", true: "#4285F4" }}
                 thumbColor="#f4f3f4"
               />
             </View>
@@ -439,7 +438,7 @@ const PreferencesScreen = () => {
               <Switch
                 value={mealsWithMedication.dinner.after}
                 onValueChange={() => toggleMealMedication('dinner', 'after')}
-                trackColor={{ false: "#d1d1d1", true: "#4CAF50" }}
+                trackColor={{ false: "#d1d1d1", true: "#4285F4" }}
                 thumbColor="#f4f3f4"
               />
             </View>
@@ -618,8 +617,6 @@ const PreferencesScreen = () => {
       case 2:
         return renderMealTimes();
       case 3:
-        return renderOtherPreferences();
-      case 4:
         return renderFinish();
       default:
         return null;
@@ -719,16 +716,16 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#4285F4',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
   },
   activeStep: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#4285F4',
   },
   completedStep: {
-    backgroundColor: '#81C784',
+    backgroundColor: '#4285F4',
   },
   progressStepText: {
     color: '#fff',
@@ -742,15 +739,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activeLine: {
-    backgroundColor: '#81C784',
+    backgroundColor: '#4285F4',
   },
   stepContainer: {
     padding: 20,
+    
   },
   welcomeTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: '#4285F4',
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -764,7 +762,7 @@ const styles = StyleSheet.create({
   stepTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: '#4285F4',
     marginBottom: 12,
   },
   stepDescription: {
@@ -808,7 +806,7 @@ const styles = StyleSheet.create({
   mealTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color:  '#4285F4',
     marginBottom: 12,
   },
   timeSelector: {
@@ -828,7 +826,7 @@ const styles = StyleSheet.create({
   },
   medicationTimeText: {
     fontSize: 14,
-    color: '#4CAF50',
+    color: '#4285F4',
     fontStyle: 'italic',
     marginTop: -8,
     marginBottom: 12,
@@ -846,13 +844,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: '#4CAF50',
+    borderColor: '#4285F4',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   backButtonText: {
-    color: '#4CAF50',
+    color: '#4285F4',
     fontWeight: '600',
     fontSize: 16,
   },
@@ -870,7 +868,7 @@ const styles = StyleSheet.create({
   nextButton: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#4285F4',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',

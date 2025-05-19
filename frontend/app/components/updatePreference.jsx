@@ -412,8 +412,8 @@ const UpdatePreferences = ({ existingPreferences, onSaveComplete, onCancel }) =>
             mode="outlined"
             onPress={onCancel}
             style={styles.cancelButton}
+            labelStyle={styles.cancelButtonLabel} 
             disabled={loading}
-            color={theme.primary}
           >
             Cancel
           </Button>
@@ -422,8 +422,9 @@ const UpdatePreferences = ({ existingPreferences, onSaveComplete, onCancel }) =>
             onPress={handleSavePreferences}
             style={styles.saveButton}
             loading={loading}
+            labelStyle={styles.saveButtonLabel}
             disabled={loading}
-            color={theme.primary}
+            buttonColor='#4285F4'
           >
             Save Preferences
           </Button>
@@ -441,7 +442,7 @@ const PreferenceSection = ({ title, data, theme }) => {
       {data.map((item, index) => (
         <View key={index} style={[
           styles.preferenceItem, 
-          index !== data.length - 1 && { borderBottomColor: theme.divider }
+          index !== data.length  && { borderBottomColor: theme.divider }
         ]}>
           <Text style={[styles.preferenceLabel, { color: theme.subText }]}>{item.label}</Text>
           <Text style={[styles.preferenceValue, { color: theme.text }]}>{item.value}</Text>
@@ -592,13 +593,27 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   saveButton: {
+     borderColor: '#4285F4',
+  borderWidth: 1,
+  borderRadius: 20,
     flex: 1,
     marginLeft: 8,
   },
+  saveButtonLabel: {
+  color: '#FFFFFF',
+  fontWeight: 'bold',
+},
   cancelButton: {
+    borderColor: '#4285F4',
+  borderWidth: 1,
+  borderRadius: 20,
     flex: 1,
     marginRight: 8,
   },
+  cancelButtonLabel: {
+  color: '#4285F4',
+},
+
   retryButton: {
     marginTop: 16,
     paddingHorizontal: 24,

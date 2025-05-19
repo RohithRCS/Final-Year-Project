@@ -158,27 +158,6 @@ const SettingsScreen = () => {
             <Text style={[styles.profileDetail, { color: theme.subText }]}>
               {currentUser?.phoneNumber || 'No phone number'}
             </Text>
-
-            <View style={styles.healthStatRow}>
-              <View style={styles.healthStat}>
-                <Text style={[styles.healthStatValue, { color: theme.primary }]}>
-                  {currentUser?.height ? `${currentUser.height} cm` : 'Not set'}
-                </Text>
-                <Text style={[styles.healthStatLabel, { color: theme.subText }]}>Height</Text>
-              </View>
-              <View style={styles.healthStat}>
-                <Text style={[styles.healthStatValue, { color: theme.primary }]}>
-                  {currentUser?.weight ? `${currentUser.weight} kg` : 'Not set'}
-                </Text>
-                <Text style={[styles.healthStatLabel, { color: theme.subText }]}>Weight</Text>
-              </View>
-              <View style={styles.healthStat}>
-                <Text style={[styles.healthStatValue, { color: theme.primary }]}>
-                  {calculateAge(currentUser?.dob)}
-                </Text>
-                <Text style={[styles.healthStatLabel, { color: theme.subText }]}>Age</Text>
-              </View>
-            </View>
           </View>
         </View>
         
@@ -339,6 +318,7 @@ const styles = StyleSheet.create({
   settingsSection: {
     borderRadius: 16,
     padding: 18,
+    paddingBottom:5,
     marginHorizontal: 20,
     marginBottom: 20,
     shadowColor: '#000',
@@ -356,7 +336,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
-    height:50,
+    height:70,
   },
   settingIconContainer: {
     marginRight: 12,

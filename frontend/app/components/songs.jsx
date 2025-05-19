@@ -133,7 +133,7 @@ const ArtistMusicPlayer = () => {
   const fetchFavorites = async () => {
     try {
       setIsLoadingFavorites(true);
-      const response = await axios.get(`http://192.168.227.81:1234/api/favorites?userId=${currentUser.userId}`, {
+      const response = await axios.get(`http://192.168.91.81:1234/api/favorites?userId=${currentUser.userId}`, {
         headers: getAuthHeader()
       });
       
@@ -184,7 +184,7 @@ const ArtistMusicPlayer = () => {
     
     try {
       if (favorites.has(songId)) {
-        await axios.delete(`http://192.168.227.81:1234/api/favorites/${songId}`, {
+        await axios.delete(`http://192.168.91.81:1234/api/favorites/${songId}`, {
           headers: getAuthHeader(),
           data: { userId: currentUser.userId }
         });
@@ -195,7 +195,7 @@ const ArtistMusicPlayer = () => {
           return newFavorites;
         });
       } else {
-        await axios.post(`http://192.168.227.81:1234/api/favorites/${songId}`, {
+        await axios.post(`http://192.168.91.81:1234/api/favorites/${songId}`, {
           userId: currentUser.userId
         }, {
           headers: getAuthHeader()
@@ -229,7 +229,7 @@ const ArtistMusicPlayer = () => {
   const fetchSongs = async () => {
     try {
       setIsLoadingSongs(true);
-      const response = await axios.get('http://192.168.227.81:1234/api/songs/');
+      const response = await axios.get('http://192.168.91.81:1234/api/songs/');
       
       const formattedSongs = response.data.map(song => ({
         id: song._id,
@@ -645,6 +645,9 @@ const ArtistMusicPlayer = () => {
           <View style={styles(theme).expandedSongInfo}>
             <Text style={styles(theme).expandedTitle}>{currentSong.title}</Text>
             <Text style={styles(theme).expandedArtist}>{currentSong.artist}</Text>
+          </View>
+          
+          <View style={styles(theme).progressContainer}>
             <TouchableOpacity 
               onPress={(e) => toggleFavorite(currentSong.id, e)}
               style={styles(theme).expandedFavoriteButton}
@@ -655,9 +658,6 @@ const ArtistMusicPlayer = () => {
                 color={isFavorite ? theme.primary : theme.subText} 
               />
             </TouchableOpacity>
-          </View>
-          
-          <View style={styles(theme).progressContainer}>
             <Slider
               style={styles(theme).progressBar}
               minimumValue={0}
@@ -765,13 +765,7 @@ const ArtistMusicPlayer = () => {
               <View style={styles(theme).headerRow}>
                 <Text style={[styles(theme).listTitle, { color: theme.text }]}>Artists</Text>
                 <View style={styles(theme).headerActions}>
-                  <TouchableOpacity style={styles(theme).themeToggle} onPress={toggleTheme}>
-                    <Ionicons 
-                      name={isDarkMode ? "sunny" : "moon"} 
-                      size={22} 
-                      color={theme.primary} 
-                    />
-                  </TouchableOpacity>
+                  
                   <TouchableOpacity style={styles(theme).refreshButton} onPress={fetchSongs}>
                     <Ionicons name="refresh" size={22} color={theme.primary} />
                   </TouchableOpacity>
@@ -1136,6 +1130,7 @@ const styles = (theme) => StyleSheet.create({
   },
   expandedFavoriteButton: {
     padding: 10,
+    marginLeft:320,
   },
   progressContainer: {
     width: '100%',

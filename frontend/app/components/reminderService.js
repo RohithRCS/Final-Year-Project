@@ -4,40 +4,33 @@ import * as Notifications from 'expo-notifications';
 
 export const WaterReminderService = {
   /**
-   * Schedule static water reminders that repeat every 2 hours starting from wake-up time
-   * @param {string} wakeTimeStr - Wake up time in format "HH:MM" (24-hour format)
+   * Schedule water reminders for a single day (non-repeating)
+   * @param {string} wakeTimeStr - Wake-up time in "HH:MM" (24-hour format)
    * @returns {Promise<Object>} - Result of the operation
    */
   async scheduleStaticWaterReminders(wakeTimeStr = "08:00") {
     try {
       // Cancel any existing water reminders first
       await this.cancelWaterReminders();
-      
-      // Parse wake time
+
       const [hours, minutes] = wakeTimeStr.split(':').map(Number);
-      
-      // Create reminders
       const reminders = [];
-      const waterRemindersCount = 8; // Will create 8 reminders (covering ~16 hours of wake time)
-      
+      const waterRemindersCount = 8; // 8 reminders every 2 hours from wake time
+
       for (let i = 0; i < waterRemindersCount; i++) {
-        // Calculate reminder time (wake time + i*2 hours)
-        const reminderTime = new Date();
-        reminderTime.setHours(hours, minutes, 0, 0);
-        reminderTime.setTime(reminderTime.getTime() + (i * 2 * 60 * 60 * 1000)); // Add i*2 hours
-        
-        // If reminder time is in the past, schedule for tomorrow
         const now = new Date();
-        if (reminderTime < now) {
-          reminderTime.setDate(reminderTime.getDate() + 1);
-        }
-        
-        // Create reminder content
+        const reminderTime = new Date();
+        reminderTime.setHours(hours + i * 2, minutes, 0, 0);
+
+        // If reminder time has already passed, skip it
+        if (reminderTime <= now) continue;
+
         const title = 'Water Reminder';
         const body = 'Time to drink water! Stay hydrated for better health.';
         const reminderId = `water-reminder-${i}-${Date.now()}`;
-        
-        // Schedule the notification
+
+        const trigger = reminderTime;
+
         const notificationId = await Notifications.scheduleNotificationAsync({
           content: {
             title,
@@ -46,62 +39,50 @@ export const WaterReminderService = {
             priority: Notifications.AndroidNotificationPriority.HIGH,
             data: { reminderId },
           },
-          trigger: {
-            hour: reminderTime.getHours(),
-            minute: reminderTime.getMinutes(),
-            repeats: true,
-          },
+          trigger,
         });
-        
-        console.log(`Scheduled repeating water reminder #${i+1} for: ${reminderTime.getHours()}:${reminderTime.getMinutes() < 10 ? '0' + reminderTime.getMinutes() : reminderTime.getMinutes()}`);
-        
-        // Add to reminders array
+
+        console.log(`Scheduled water reminder #${i + 1} for: ${reminderTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+
         reminders.push({
           id: reminderId,
           notificationId,
           title,
-          time: `${reminderTime.getHours()}:${reminderTime.getMinutes() < 10 ? '0' + reminderTime.getMinutes() : reminderTime.getMinutes()}`,
-          body,
-          type: 'water',
-          triggerTime: reminderTime.toISOString(),
+          description: body,
+          time: `${reminderTime.getHours()}:${reminderTime.getMinutes().toString().padStart(2, '0')}`,
+          date: reminderTime.toISOString(),
+          repeats: false,
           isWaterReminder: true,
-          repeats: true,
         });
       }
-      
+
       // Save to AsyncStorage
       const existingRemindersJSON = await AsyncStorage.getItem('reminders');
       let existingReminders = existingRemindersJSON ? JSON.parse(existingRemindersJSON) : [];
-      
-      // Filter out previous water reminders if they exist
+
       existingReminders = existingReminders.filter(r => !r.isWaterReminder);
-      
-      // Add new water reminders
+
       const updatedReminders = [...existingReminders, ...reminders];
       await AsyncStorage.setItem('reminders', JSON.stringify(updatedReminders));
-      
-      // Save last water reminder setup time
       await AsyncStorage.setItem('lastWaterReminderSetup', new Date().toISOString());
-      
+
       return { success: true, reminders };
     } catch (error) {
       console.error('Error scheduling water reminders:', error);
       return { success: false, error: error.message };
     }
   },
-  
+
   /**
    * Cancel all water reminders
-   * @returns {Promise<Object>} - Result of the operation
    */
   async cancelWaterReminders() {
     try {
       const existingRemindersJSON = await AsyncStorage.getItem('reminders');
       if (!existingRemindersJSON) return { success: true, message: 'No reminders to cancel' };
-      
+
       const existingReminders = JSON.parse(existingRemindersJSON);
-      
-      // Find and cancel water reminders
+
       for (const reminder of existingReminders.filter(r => r.isWaterReminder)) {
         if (reminder.notificationId) {
           try {
@@ -111,27 +92,25 @@ export const WaterReminderService = {
           }
         }
       }
-      
-      // Update storage without water reminders
+
       const updatedReminders = existingReminders.filter(r => !r.isWaterReminder);
       await AsyncStorage.setItem('reminders', JSON.stringify(updatedReminders));
-      
+
       return { success: true };
     } catch (error) {
       console.error('Error canceling water reminders:', error);
       return { success: false, error: error.message };
     }
   },
-  
+
   /**
    * Get all scheduled water reminders
-   * @returns {Promise<Array>} - Array of water reminders
    */
   async getWaterReminders() {
     try {
       const existingRemindersJSON = await AsyncStorage.getItem('reminders');
       if (!existingRemindersJSON) return [];
-      
+
       const existingReminders = JSON.parse(existingRemindersJSON);
       return existingReminders.filter(r => r.isWaterReminder);
     } catch (error) {
@@ -140,6 +119,7 @@ export const WaterReminderService = {
     }
   }
 };
+
 
 export class ReminderService {
   // Helper method to create a Date object from time string
