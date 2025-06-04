@@ -59,9 +59,9 @@ router.post('/', upload.single('audio'), (req, res) => {
 
     const audioFile = req.file;
     console.log(`Processing audio file: ${audioFile.path}`);
+    
+    const pythonScriptPath = path.join(__dirname, "./transcribe_mic.py");
 
-    // Path to the Python script (adjust as needed)
-    const pythonScriptPath = "C:\\Users\\rohit\\ElderAssistMain\\backend\\controllers\\transcribe_mic.py"
     
     // Run the Python script
     const pythonProcess = spawn('python', [pythonScriptPath, audioFile.path]);
