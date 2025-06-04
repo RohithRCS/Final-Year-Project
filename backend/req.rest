@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://192.168.71.147:1234/api/songs HTTP/1.1
+POST http://192.168.91.81:1234/api/songs HTTP/1.1
 Content-Type: application/json
 
 {
@@ -50,10 +50,10 @@ POST https://elder-assist-neww.onrender.com/api/songs/scan-assets HTTP/1.1
 Content-Type: application/json
 
 ###
-GET http://192.168.227.81:1234/api/songs/
+GET http://192.168.246.81:1234/api/songs/
 
 ###
-POST http://192.168.190.147:1234/api/location HTTP/1.1
+POST http://192.168.246.81:1234/api/location HTTP/1.1
 Content-Type: application/json
 
 {

@@ -411,7 +411,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://192.168.91.81:1234/api/favorites?userId=${currentUser.userId}`,
+        `http://192.168.24.81:1234/api/favorites?userId=${currentUser.userId}`,
         { headers: getAuthHeader() }
       );
       
@@ -442,7 +442,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
     }
     
     try {
-      await axios.delete(`http://192.168.91.81:1234/api/favorites/${songId}`, {
+      await axios.delete(`http://192.168.24.81:1234/api/favorites/${songId}`, {
         headers: getAuthHeader(),
         data: { userId: currentUser.userId }
       });
@@ -512,14 +512,13 @@ const FavoritePlaylist = ({ route, navigation }) => {
         <View style={styles(theme).songInfo}>
           <Text style={[styles(theme).songTitle, isActive && styles(theme).activeText]}>{item.title}</Text>
           <Text style={styles(theme).songArtist}>{item.artist}</Text>
-          <Text style={styles(theme).songDuration}>{formatTime(item.duration)}</Text>
         </View>
         <View style={styles(theme).actions}>
           {isActive && (
             <Ionicons 
               name={isPlaying ? "pause" : "play"} 
               size={24} 
-              color="#1DB954" 
+              color="#4285F4" 
               style={styles(theme).playIcon}
             />
           )}
@@ -529,7 +528,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
             <Ionicons 
               name="heart" 
               size={24} 
-              color="#1DB954" 
+              color="#FF0000" 
             />
           </TouchableOpacity>
         </View>
@@ -567,7 +566,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
               <Ionicons 
                 name="heart" 
                 size={28} 
-                color="#1DB954" 
+                color="#FF0000" 
               />
             </TouchableOpacity>
           </View>
@@ -580,9 +579,9 @@ const FavoritePlaylist = ({ route, navigation }) => {
               value={position}
               onSlidingStart={handleStartSeeking}
               onSlidingComplete={handleStopSeeking}
-              minimumTrackTintColor="#1DB954"
+              minimumTrackTintColor="#4285f4"
               maximumTrackTintColor="#555"
-              thumbTintColor="#1DB954"
+              thumbTintColor="#4285f4"
             />
             <View style={styles(theme).timeContainer}>
               <Text style={styles(theme).timeText}>{formatTime(position)}</Text>
@@ -608,7 +607,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
                 <Ionicons 
                   name={isPlaying ? "pause" : "play"} 
                   size={32} 
-                  color="black" 
+                  color="white" 
                 />
               )}
             </TouchableOpacity>
@@ -628,7 +627,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
   if (isLoading) {
     return (
       <SafeAreaView style={styles(theme).loadingContainer}>
-        <ActivityIndicator size="large" color="#1DB954" />
+        <ActivityIndicator size="large" color="#4285f4" />
         <Text style={styles(theme).loadingText}>Loading your favorites...</Text>
       </SafeAreaView>
     );
@@ -648,7 +647,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
             </TouchableOpacity>
             <Text style={styles(theme).headerTitle}>Favorite Songs</Text>
             <TouchableOpacity onPress={fetchFavoriteSongs} style={styles(theme).refreshButton}>
-              <Ionicons name="refresh" size={24} color="#1DB954" />
+              <Ionicons name="refresh" size={24} color="#4285F4" />
             </TouchableOpacity>
           </View>
 
@@ -689,7 +688,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
             
             <View style={styles(theme).controls}>
               <TouchableOpacity onPress={playPreviousSong} style={styles(theme).controlButton}>
-                <Ionicons name="play-skip-back" size={28} color={theme.text} />
+                <Ionicons name="play-skip-back" size={24} color={theme.text} />
               </TouchableOpacity>
               
               <TouchableOpacity style={styles(theme).playButton} onPress={togglePlayPause}>
@@ -698,8 +697,8 @@ const FavoritePlaylist = ({ route, navigation }) => {
                 ) : (
                   <Ionicons 
                     name={isPlaying ? "pause" : "play"} 
-                    size={28} 
-                    color={theme.text} 
+                    size={24} 
+                    color={'white'} 
                   />
                 )}
               </TouchableOpacity>
@@ -760,7 +759,7 @@ const styles = (theme) => StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     backgroundColor: theme.surface,
-    borderBottomWidth: 1,
+    
     borderBottomColor: theme.border,
     elevation: 2,
     shadowColor: '#000',
@@ -804,17 +803,13 @@ const styles = (theme) => StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 4,
     borderRadius: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    
   },
   
   activeSong: {
     backgroundColor: theme.activeBackground,
     borderWidth: 1,
-    borderColor: '#1DB954',
+    borderColor: '#4285f4',
   },
   
   albumCover: {
@@ -837,7 +832,7 @@ const styles = (theme) => StyleSheet.create({
   },
   
   activeText: {
-    color: '#1DB954',
+    color: '#4285f4',
   },
   
   songArtist: {
@@ -890,14 +885,11 @@ const styles = (theme) => StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: theme.surface,
-    borderTopWidth: 1,
+    backgroundColor: 'white',
+    borderTopWidth: 0.5,
     borderTopColor: theme.border,
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    
+    
   },
   
   playerContent: {
@@ -943,18 +935,18 @@ const styles = (theme) => StyleSheet.create({
   
   playButton: {
     padding: 8,
-    backgroundColor: '#1DB954',
+    backgroundColor: '#4285f4',
     borderRadius: 25,
   },
   
   miniProgressContainer: {
-    height: 3,
+    height: 6,
     backgroundColor: theme.border,
   },
   
   miniProgress: {
     height: '100%',
-    backgroundColor: '#1DB954',
+    backgroundColor: '#4285f4',
   },
   
   // Expanded Player Styles
@@ -969,7 +961,7 @@ const styles = (theme) => StyleSheet.create({
   },
   
   expandedPlayerCloseBtn: {
-    alignSelf: 'center',
+    alignSelf: 'left',
     padding: 16,
     marginTop: 8,
   },
@@ -983,8 +975,8 @@ const styles = (theme) => StyleSheet.create({
   },
   
   expandedCover: {
-    width: width * 0.8,
-    height: width * 0.8,
+    width: width * 0.7,
+    height: width * 0.7,
     borderRadius: 20,
     marginTop: 20,
     elevation: 8,
@@ -996,7 +988,7 @@ const styles = (theme) => StyleSheet.create({
   
   expandedSongInfo: {
     alignItems: 'center',
-    marginVertical: 32,
+   marginTop:-30,
   },
   
   expandedTitle: {
@@ -1016,9 +1008,10 @@ const styles = (theme) => StyleSheet.create({
   
   expandedFavoriteButton: {
     padding: 12,
-    backgroundColor: theme.cardBackground,
+    alignSelf:'center',
+    marginLeft:300,
     borderRadius: 30,
-    elevation: 4,
+    marginBottom:-20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -1028,7 +1021,7 @@ const styles = (theme) => StyleSheet.create({
   // Progress Bar Styles
   progressContainer: {
     width: '100%',
-    marginVertical: 20,
+    marginTop:-50,
   },
   
   progressBar: {
@@ -1055,14 +1048,12 @@ const styles = (theme) => StyleSheet.create({
     justifyContent: 'space-around',
     width: '100%',
     paddingHorizontal: 40,
-    marginTop: 32,
+   marginBottom:60,
   },
   
   expandedControlBtn: {
     padding: 16,
-    backgroundColor: theme.cardBackground,
     borderRadius: 35,
-    elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -1070,9 +1061,9 @@ const styles = (theme) => StyleSheet.create({
   },
   
   expandedPlayButton: {
-    width: 80,
-    height: 80,
-    backgroundColor: '#1DB954',
+    width: 70,
+    height: 70,
+    backgroundColor: '#4285F4',
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',

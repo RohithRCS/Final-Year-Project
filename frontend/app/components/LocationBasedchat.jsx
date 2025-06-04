@@ -100,7 +100,7 @@ useEffect(() => {
 
   const getWebSocketUrl = () => {
     if (__DEV__) {
-      return 'ws://192.168.91.81:1234/ws/localchat'; // Change this to your local IP
+      return 'ws://192.168.24.81:1234/ws/localchat'; // Change this to your local IP
     }
     return BASE_URL.replace('http', 'ws') + '/ws/localchat';
   };

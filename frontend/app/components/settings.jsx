@@ -216,7 +216,7 @@ const SettingsScreen = () => {
             iconName="information-circle-outline" 
             iconColor="#34A853" 
             title="About App" 
-            onPress={() => navigateTo('AboutApp')}
+            onPress={() => navigateTo('About')}
             showBorder={false}
           />
         </SettingSection>

@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { StackNavigationProp } from '@react-navigation/stack';
 import axios from 'axios';
-import { useAuth } from './AuthContext'; // Import the auth context
-import {BASE_URL} from './config';
-import { useTheme } from './ThemeContext'
+import { useAuth } from './AuthContext';
+import { BASE_URL } from './config';
+import { useTheme } from './ThemeContext';
 
 // Define types for navigation
 type RootStackParamList = {
@@ -34,7 +34,6 @@ interface MeditationType {
 
 const MeditationScreen: React.FC = () => {
   const navigation = useNavigation<MeditationScreenNavigationProp>();
-  // Use the auth context instead of AsyncStorage
   const { currentUser } = useAuth();
   const { theme } = useTheme();
   
@@ -56,6 +55,19 @@ const MeditationScreen: React.FC = () => {
     }
   }, [currentUser, meditations.length]);
 
+  useEffect(() => {
+  // Only set up the interval if user is logged in and we have meditations loaded
+  if (currentUser?.userId && meditations.length > 0) {
+    const intervalId = setInterval(() => {
+      fetchFavorites(currentUser.userId);
+    }, 1000); // Fetch every 3 seconds
+    
+    // Clean up the interval when component unmounts
+    return () => clearInterval(intervalId);
+  }
+}, [currentUser, meditations.length]);
+
+
   // Fetch all meditations from API
   const fetchMeditations = async () => {
     setIsLoading(true);
@@ -64,7 +76,7 @@ const MeditationScreen: React.FC = () => {
       const response = await axios.get(`${BASE_URL}/meditation`);
       
       // Transform API response to match our component's expected format
-      const transformedMeditations = response.data.map((item: any) => ({
+      const transformedMeditations = response.data.map((item:any) => ({
         id: item.meditationId, // Using meditationId from API as our id
         meditationId: item.meditationId, // Keep original meditationId for API calls
         title: item.title,
@@ -87,29 +99,46 @@ const MeditationScreen: React.FC = () => {
     }
   };
 
-  // Fetch user's favorite meditations
-  const fetchFavorites = async (userId: string) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/meditation/${userId}`);
-      
-      // Create a map of favorited meditation IDs for easy lookup
-      const favoritedIds = new Set(response.data.map((item: any) => item.meditationId));
-      
-      // Update meditation list with favorite status
-      setMeditations(prevMeditations => 
-        prevMeditations.map(meditation => ({
-          ...meditation,
-          isFavorite: favoritedIds.has(meditation.id)
-        }))
+  const fetchFavorites = async (userId:any) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/meditation/${userId}`);
+    
+    // Create a map of favorited meditation IDs for easy lookup
+    const favoritedIds = new Set(response.data.map((item:any) => item.meditationId));
+    
+    // Only update state if there's an actual change to prevent unnecessary re-renders
+    setMeditations(prevMeditations => {
+      // Check if favorites have changed
+      const hasChanges = prevMeditations.some(meditation => 
+        favoritedIds.has(meditation.meditationId) !== meditation.isFavorite
       );
-    } catch (error) {
-      console.error('Error fetching favorites:', error);
-      // Don't show alert here as it's not a critical failure
+      
+      // Only update if there are changes
+      if (hasChanges) {
+        return prevMeditations.map(meditation => ({
+          ...meditation,
+          isFavorite: favoritedIds.has(meditation.meditationId)
+        }));
+      }
+      
+      // Return previous state if no changes
+      return prevMeditations;
+    });
+    
+    // Also update selected video if it exists and its favorite status has changed
+    if (selectedVideo) {
+      const newFavoriteStatus = favoritedIds.has(selectedVideo.meditationId);
+      if (selectedVideo.isFavorite !== newFavoriteStatus) {
+        setSelectedVideo(prev => prev ? {...prev, isFavorite: newFavoriteStatus} : null);
+      }
     }
-  };
+  } catch (error) {
+    // Silently handle error to prevent UI disruption
+    console.error('Error fetching favorites:', error);
+  }
+};
 
-  // Toggle favorite status
-  const toggleFavorite = async (meditationId: string) => {
+  const toggleFavorite = async (meditationId:any) => {
     if (!currentUser?.userId) {
       Alert.alert('Login Required', 'Please log in to add favorites');
       return;
@@ -117,28 +146,28 @@ const MeditationScreen: React.FC = () => {
 
     try {
       // Find the meditation in our state
-      const meditation = meditations.find(m => m.id === meditationId);
+      const meditation = meditations.find(m => m.meditationId === meditationId);
       if (!meditation) return;
 
       if (meditation.isFavorite) {
         // Remove from favorites
         await axios.delete(`${BASE_URL}/meditation/${currentUser.userId}/${meditationId}`);
       } else {
-        // Add to favorites
+        // Add to favorites  
         await axios.post(`${BASE_URL}/meditation/${currentUser.userId}/${meditationId}`);
       }
 
       // Update local state
       setMeditations(prevMeditations => 
         prevMeditations.map(m => 
-          m.id === meditationId 
+          m.meditationId === meditationId 
             ? { ...m, isFavorite: !m.isFavorite } 
             : m
         )
       );
 
       // Also update selected video if it's the one being toggled
-      if (selectedVideo && selectedVideo.id === meditationId) {
+      if (selectedVideo && selectedVideo.meditationId === meditationId) {
         setSelectedVideo({
           ...selectedVideo,
           isFavorite: !selectedVideo.isFavorite
@@ -151,110 +180,103 @@ const MeditationScreen: React.FC = () => {
   };
 
   // Handle meditation selection to play video
-  const handleMeditationSelect = (meditation: MeditationType): void => {
+  const handleMeditationSelect = (meditation:any) => {
     setSelectedVideo(meditation);
     setPlaying(true);
   };
   
   // Close video player
-  const handleCloseVideo = (): void => {
+  const handleCloseVideo = () => {
     setSelectedVideo(null);
     setPlaying(false);
   };
 
   // Handle YouTube player state changes
-  const onStateChange = useCallback((state: string): void => {
+  const onStateChange = useCallback((state:any) => {
     if (state === 'ended') {
       setPlaying(false);
     }
   }, []);
 
   const renderVideoPlayer = () => {
-  if (!selectedVideo) return null;
-  
-  return (
-    <View style={[styles.videoContainer, { backgroundColor: theme.cardBackground }]}>
-      <View style={[styles.videoHeader, { borderBottomColor: theme.divider }]}>
-        <View style={styles.videoTitleContainer}>
-          <Text style={styles.emojiLarge}>{selectedVideo.emoji}</Text>
-          <Text style={[styles.videoTitle, { color: theme.text }]}>{selectedVideo.title}</Text>
-        </View>
-        <TouchableOpacity onPress={handleCloseVideo}>
-          <Ionicons name="close-circle" size={28} color={theme.primary} />
-        </TouchableOpacity>
-      </View>
-      
-      <YoutubePlayer
-        height={250}
-        play={playing}
-        videoId={selectedVideo.youtubeId}
-        onChangeState={onStateChange}
-      />
-      
-      <View style={styles.videoInfo}>
-        <Text style={[styles.videoDescription, { color: theme.text }]}>{selectedVideo.description}</Text>
-        <View style={styles.videoMetaContainer}>
-          <View style={styles.videoMeta}>
-            <View style={styles.metaItem}>
-              <Ionicons name="time-outline" size={18} color={theme.subText} />
-              <Text style={[styles.metaText, { color: theme.subText }]}>{selectedVideo.duration}</Text>
-            </View>
+    if (!selectedVideo) return null;
+    
+    return (
+      <View style={[styles.videoContainer, { backgroundColor: theme.cardBackground }]}>
+        <View style={[styles.videoHeader, { borderBottomColor: theme.divider }]}>
+          <View style={styles.videoTitleContainer}>
+            <Text style={styles.emojiLarge}>{selectedVideo.emoji}</Text>
+            <Text style={[styles.videoTitle, { color: theme.text }]}>{selectedVideo.title}</Text>
           </View>
-          <TouchableOpacity 
-            onPress={() => toggleFavorite(selectedVideo.id)}
-            style={styles.favoriteButton}
-          >
-            <Ionicons 
-              name={selectedVideo.isFavorite ? "heart" : "heart-outline"} 
-              size={28} 
-              color={selectedVideo.isFavorite ? "#E94057" : theme.subText} 
-            />
+          <TouchableOpacity onPress={handleCloseVideo}>
+            <Ionicons name="close-circle" size={28} color={theme.primary} />
           </TouchableOpacity>
         </View>
+        
+        <YoutubePlayer
+          height={250}
+          play={playing}
+          videoId={selectedVideo.youtubeId}
+          onChangeState={onStateChange}
+        />
+        
+        <View style={styles.videoInfo}>
+          <Text style={[styles.videoDescription, { color: theme.text }]}>{selectedVideo.description}</Text>
+          <View style={styles.videoMetaContainer}>
+            <View style={styles.videoMeta}>
+              <View style={styles.metaItem}>
+                <Ionicons name="time-outline" size={18} color={theme.subText} />
+                <Text style={[styles.metaText, { color: theme.subText }]}>{selectedVideo.duration}</Text>
+              </View>
+            </View>
+            <TouchableOpacity 
+              onPress={() => toggleFavorite(selectedVideo.meditationId)}
+              style={styles.favoriteButton}
+            >
+              <Ionicons 
+                name={selectedVideo.isFavorite ? "heart" : "heart-outline"} 
+                size={28} 
+                color={selectedVideo.isFavorite ? "#E94057" : theme.subText} 
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-    </View>
-  );
-};
+    );
+  };
 
-  // Render an item in the meditation list
-  const renderMeditationItem = ({ item }: { item: MeditationType }) => (
+  const renderMeditationItem = ({ item }:any) => (
     <TouchableOpacity 
-      style={styles.meditationCard}
+      style={[styles.meditationCard, { backgroundColor: theme.cardBackground }]}
       onPress={() => handleMeditationSelect(item)}
     >
       <View style={[styles.emojiContainer, { backgroundColor: item.backgroundColor }]}>
         <Text style={styles.emoji}>{item.emoji}</Text>
       </View>
       <View style={styles.meditationInfo}>
-        <Text style={styles.meditationTitle}>{item.title}</Text>
+        <Text style={[styles.meditationTitle, { color: theme.text }]}>{item.title}</Text>
         <View style={styles.meditationMeta}>
           <View style={styles.metaItem}>
-            <Ionicons name="time-outline" size={16} color="#5F6368" />
-            <Text style={styles.metaText}>{item.duration}</Text>
+            <Ionicons name="time-outline" size={16} color={theme.subText} />
+            <Text style={[styles.metaText, { color: theme.subText }]}>{item.duration}</Text>
           </View>
         </View>
       </View>
       <View style={styles.meditationActions}>
         <TouchableOpacity 
-          onPress={() => toggleFavorite(item.id)}
+          onPress={() => toggleFavorite(item.meditationId)}
           style={styles.favoriteButtonSmall}
         >
           <Ionicons 
             name={item.isFavorite ? "heart" : "heart-outline"} 
             size={24} 
-            color={item.isFavorite ? "#E94057" : "#5F6368"} 
+            color={item.isFavorite ? "#E94057" : theme.subText} 
           />
         </TouchableOpacity>
-        <Ionicons name="play-circle" size={36} color="#4285F4" />
+        <Ionicons name="play-circle" size={36} color={theme.primary} />
       </View>
     </TouchableOpacity>
   );
-
-  // Filter to show favorites only
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
-  const filteredMeditations = showFavoritesOnly 
-    ? meditations.filter(item => item.isFavorite) 
-    : meditations;
 
   if (isLoading && meditations.length === 0) {
     return (
@@ -298,13 +320,6 @@ const MeditationScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={theme.primary} />
-        </TouchableOpacity>
-        <Text style={[styles.screenTitle, { color: theme.text }]}>Meditation</Text>
-      </View>
-      
       {selectedVideo ? (
         <ScrollView contentContainerStyle={styles.videoScrollContainer}>
           {renderVideoPlayer()}
@@ -315,88 +330,19 @@ const MeditationScreen: React.FC = () => {
             Calm your mind with these gentle meditations designed for seniors 🧘‍♀️🧘‍♂️
           </Text>
           
-          {/* Favorites filter */}
-          <View style={styles.filterContainer}>
-            <TouchableOpacity 
-              style={[
-                styles.filterButton, 
-                showFavoritesOnly && styles.filterButtonActive,
-                { backgroundColor: theme.cardBackground }
-              ]}
-              onPress={() => setShowFavoritesOnly(!showFavoritesOnly)}
-            >
-              <Ionicons 
-                name="heart" 
-                size={18} 
-                color={showFavoritesOnly ? "#FFFFFF" : "#E94057"} 
-              />
-              <Text style={[
-                styles.filterButtonText,
-                showFavoritesOnly && styles.filterButtonTextActive,
-                { color: theme.subText }
-              ]}>
-                {showFavoritesOnly ? 'Show All' : 'Favorites Only'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          
           {/* Meditation list */}
-          {filteredMeditations.length === 0 && showFavoritesOnly ? (
-            <View style={styles.emptyStateContainer}>
-              <Ionicons name="heart-outline" size={60} color={theme.subText} />
-              <Text style={[styles.emptyStateText, { color: theme.text }]}>No favorites yet</Text>
-              <Text style={[styles.emptyStateSubText, { color: theme.subText }]}>
-                Tap the heart icon on any meditation to add it to your favorites
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={filteredMeditations}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.meditationList}
-              renderItem={({ item }) => (
-                <TouchableOpacity 
-                  style={[styles.meditationCard, { backgroundColor: theme.cardBackground }]}
-                  onPress={() => handleMeditationSelect(item)}
-                >
-                  <View style={[styles.emojiContainer, { backgroundColor: item.backgroundColor }]}>
-                    <Text style={styles.emoji}>{item.emoji}</Text>
-                  </View>
-                  <View style={styles.meditationInfo}>
-                    <Text style={[styles.meditationTitle, { color: theme.text }]}>{item.title}</Text>
-                    <View style={styles.meditationMeta}>
-                      <View style={styles.metaItem}>
-                        <Ionicons name="time-outline" size={16} color={theme.subText} />
-                        <Text style={[styles.metaText, { color: theme.subText }]}>{item.duration}</Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.meditationActions}>
-                    <TouchableOpacity 
-                      onPress={() => toggleFavorite(item.id)}
-                      style={styles.favoriteButtonSmall}
-                    >
-                      <Ionicons 
-                        name={item.isFavorite ? "heart" : "heart-outline"} 
-                        size={24} 
-                        color={item.isFavorite ? "#E94057" : theme.subText} 
-                      />
-                    </TouchableOpacity>
-                    <Ionicons name="play-circle" size={36} color={theme.primary} />
-                  </View>
-                </TouchableOpacity>
-              )}
-              refreshing={isLoading}
-              onRefresh={fetchMeditations}
-            />
-          )}
+          <FlatList
+            data={meditations}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.meditationList}
+            renderItem={renderMeditationItem}
+          />
         </>
       )}
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -422,30 +368,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#5F6368',
     marginBottom: 20,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    marginBottom: 15,
-  },
-  filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F1F3F4',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  filterButtonActive: {
-    backgroundColor: '#E94057',
-  },
-  filterButtonText: {
-    marginLeft: 6,
-    fontSize: 14,
-    color: '#5F6368',
-  },
-  filterButtonTextActive: {
-    color: '#FFFFFF',
   },
   meditationList: {
     paddingBottom: 20,
@@ -560,25 +482,6 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     padding: 5,
-  },
-  emptyStateContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 60,
-  },
-  emptyStateText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#5F6368',
-    marginTop: 15,
-  },
-  emptyStateSubText: {
-    fontSize: 14,
-    color: '#9AA0A6',
-    textAlign: 'center',
-    marginTop: 8,
-    maxWidth: '80%',
   },
   loadingContainer: {
     flex: 1,

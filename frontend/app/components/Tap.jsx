@@ -85,9 +85,13 @@ const TapTheTargetGame = () => {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={[styles.header, { backgroundColor: theme.primary }]}>
         <Text style={[styles.title, { color: theme.text }]}>Tap the Target!</Text>
-        <Text style={[styles.scoreText, { color: theme.text }]}>Score: {score}</Text>
-        <Text style={[styles.timeText, { color: theme.text }]}>Time: {timeLeft}s</Text>
-        <Text style={[styles.highScoreText, { color: theme.text }]}>High Score: {highScore}</Text>
+        
+        {/* Stats row with three equal columns */}
+        <View style={styles.statsRow}>
+          <Text style={[styles.statText, { color: theme.text }]}>Score: {score}</Text>
+          <Text style={[styles.statText, { color: theme.text }]}>Time: {timeLeft}s</Text>
+          <Text style={[styles.statText, { color: theme.text }]}>High Score: {highScore}</Text>
+        </View>
       </View>
       
       {!gameActive && timeLeft === 30 ? (
@@ -132,17 +136,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    marginTop: -30,
     marginBottom: 10,
     textAlign: 'center',
   },
-  scoreText: {
-    fontSize: 18,
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 0,
+    marginTop: 5,
+    marginLeft: -20,
   },
-  timeText: {
+  statText: {
+    flex: 1,
     fontSize: 18,
-  },
-  highScoreText: {
-    fontSize: 18,
+    textAlign: 'center',
   },
   target: {
     position: 'absolute',
@@ -160,6 +168,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
 
 export default TapTheTargetGame;

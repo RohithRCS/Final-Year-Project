@@ -14,25 +14,47 @@ import { MaterialIcons } from '@expo/vector-icons';
 const EmergencySosButton = ({ size = 'normal', onSetupContact }) => {
   const { getPreferences } = useAuth();
   const [emergencyContact, setEmergencyContact] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [callInProgress, setCallInProgress] = useState(false);
 
+  // Fetch once immediately
   useEffect(() => {
     fetchEmergencyContact();
   }, []);
 
+  // Fetch in background silently every 1 second
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchAndSetContact = async () => {
+      try {
+        const response = await getPreferences();
+        if (isMounted && response.success && response.data?.emergencyContact) {
+          setEmergencyContact(response.data.emergencyContact);
+        }
+      } catch (error) {
+        console.error('Error fetching emergency contact:', error);
+      }
+    };
+
+    fetchAndSetContact(); // initial silent fetch
+
+    const intervalId = setInterval(fetchAndSetContact, 1000); // every 1 second
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  // Initial fetch with optional loading state (removed visual use)
   const fetchEmergencyContact = async () => {
     try {
-      setLoading(true);
       const response = await getPreferences();
-      
       if (response.success && response.data?.emergencyContact) {
         setEmergencyContact(response.data.emergencyContact);
       }
     } catch (error) {
       console.error('Error fetching emergency contact:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -52,23 +74,18 @@ const EmergencySosButton = ({ size = 'normal', onSetupContact }) => {
 
     try {
       setCallInProgress(true);
-      
-      // Format phone number - remove spaces and special characters
+
       const phoneNumber = emergencyContact.phone.replace(/[^\d+]/g, '');
       const telUrl = `tel:${phoneNumber}`;
-      
-      // Open the phone dialer
+
       const canOpenTel = await Linking.canOpenURL(telUrl);
-      
       if (canOpenTel) {
         await Linking.openURL(telUrl);
       } else {
         throw new Error('Device cannot open telephone links');
       }
-      
     } catch (error) {
       console.error('Call error:', error);
-      
       Alert.alert(
         'Unable to Open Dialer',
         `Please manually dial: ${emergencyContact.phone}`,
@@ -80,7 +97,7 @@ const EmergencySosButton = ({ size = 'normal', onSetupContact }) => {
   };
 
   const handlePress = () => {
-    if (!callInProgress && !loading) {
+    if (!callInProgress) {
       makeEmergencyCall();
     }
   };
@@ -88,32 +105,27 @@ const EmergencySosButton = ({ size = 'normal', onSetupContact }) => {
   const handleLongPress = () => {
     Alert.alert(
       'Emergency Contact Settings',
-      emergencyContact 
+      emergencyContact
         ? `Current: ${emergencyContact.name} (${emergencyContact.phone})`
         : 'No emergency contact set',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: emergencyContact ? 'Change Contact' : 'Set Up Contact', 
+        {
+          text: emergencyContact ? 'Change Contact' : 'Set Up Contact',
           onPress: () => {
             if (onSetupContact) onSetupContact();
-          } 
+          },
         },
       ]
     );
   };
 
   const renderButtonContent = () => {
-    if (loading) {
-      return <ActivityIndicator color="#fff" size={size === 'large' ? 'large' : 'small'} />;
-    }
-
     if (callInProgress) {
       return (
         <View style={styles.buttonContent}>
-          <ActivityIndicator color="#fff" size="small" style={styles.icon} />
           <Text style={size === 'large' ? styles.largeButtonText : styles.buttonText}>
-            CALLING
+            CALLING...
           </Text>
         </View>
       );
@@ -121,11 +133,11 @@ const EmergencySosButton = ({ size = 'normal', onSetupContact }) => {
 
     return (
       <View style={styles.buttonContent}>
-        <MaterialIcons 
-          name="phone-in-talk" 
-          size={size === 'large' ? 28 : 20} 
-          color="#fff" 
-          style={styles.icon} 
+        <MaterialIcons
+          name="phone-in-talk"
+          size={size === 'large' ? 28 : 20}
+          color="#fff"
+          style={styles.icon}
         />
         <Text style={size === 'large' ? styles.largeButtonText : styles.buttonText}>
           SOS

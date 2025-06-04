@@ -126,6 +126,7 @@ const CustomReminder = ({ visible, onClose, onSave }) => {
         notificationId,
         title: title || 'Reminder',
         description,
+        body:description,
         time: getTimeString(time),
         date: scheduledTime.toISOString(),
         repeats,

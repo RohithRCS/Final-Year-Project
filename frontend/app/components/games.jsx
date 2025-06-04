@@ -58,12 +58,12 @@ const GameCard = ({ game, onPress, index, isFavorite, onToggleFavorite, isLoadin
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color={theme.primary} />
+              <ActivityIndicator size="small" color="#FF0000" />
             ) : (
               <Icon 
                 name={isFavorite ? "favorite" : "favorite-border"} 
                 size={24} 
-                color={isFavorite ? theme.primary : theme.text} 
+                color={isFavorite ? "#FF0000" : "#888"} 
               />
             )}
           </TouchableOpacity>
@@ -115,6 +115,7 @@ const GamesScreen = () => {
       const response = await fetch(`${BASE_URL}/game`, {
         headers: getAuthHeader()
       });
+
       
       if (response.ok) {
         const data = await response.json();

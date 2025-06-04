@@ -23,7 +23,7 @@ const HelpSupportScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Company support email
-  const SUPPORT_EMAIL = 'sgmbargavi@gmail.com';
+  const SUPPORT_EMAIL = 'support@elderassistapp.com';
 
   // Common support topics that elderly users might need help with
   const commonTopics = [
@@ -239,7 +239,7 @@ ${message}
         <View style={[styles.contactInfo, { backgroundColor: theme.cardBackground }]}>
           <Text style={[styles.contactTitle, { color: theme.text }]}>Other Ways to Reach Us</Text>
           <Text style={[styles.contactDetail, { color: theme.text }]}>
-            <Text style={{ fontWeight: 'bold' }}>Phone:</Text> 1-800-ELDER-HELP
+            <Text style={{ fontWeight: 'bold' }}>Phone:</Text> +91 9876543210
           </Text>
           <TouchableOpacity onPress={() => Linking.openURL(`mailto:${SUPPORT_EMAIL}`)}>
             <Text style={[styles.contactDetail, { color: theme.text }]}>

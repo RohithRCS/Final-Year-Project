@@ -14,13 +14,14 @@ import ChatbotScreen from './components/chatbot';
 import ActivitiesScreen from './components/activities';
 import CommunityScreen from './components/LocationBasedchat';
 import LoginScreen from './components/login';
+import About from './components/about'
 import RegisterScreen from './components/register';
 import SettingsScreen from './components/settings';
 import MusicPlayer from './components/songs';
 import GamesScreen from './components/games';
 import TipsScreen from './components/tip';
-import ExerciseScreen from './components/exercise';
-import RelaxScreen from './components/relaxation';
+import ExerciseScreen from './components/Exercisemain';
+import RelaxScreen from './components/Relaxmain';
 import FavoritePlaylist from './components/favouritePlaylist';
 import BalloonPopGame from './components/baloon';
 import BubblePopGame from './components/Bubble';
@@ -38,7 +39,9 @@ import Profile from './components/Profile';
 import UpdatePreference from './components/updatePreference'
 import GetPreferences from './components/Prefrences';
 import Emergency from './components/Emergency'
+import ExerciseTabNavigator from './components/ExerciseTabNavigator'
 import support from './components/support'
+import MeditationTabNav from './components/MeditationTabNavigator'
 import { AuthProvider, useAuth } from './components/AuthContext';
 import { ThemeProvider, useTheme } from './components/ThemeContext';
 
@@ -53,8 +56,11 @@ export type RootStackParamList = {
   TipsStack: undefined;
   ExerciseStack: undefined;
   RelaxStack: undefined;
+  MeditationTabNav:undefined;
+  ExerciseNav:undefined;
   LocalChat: undefined;
   Auth: undefined;
+  Favmeditation:undefined;
   Login: undefined;
   Register: undefined;
   GetPrefrences: undefined;
@@ -66,10 +72,13 @@ export type RootStackParamList = {
   baloon: undefined;
   'Falling Stars': undefined;
   Bubble: undefined;
+  About:undefined;
   Tap: undefined;
   find: undefined;
   Garden: undefined;
   Emergency:undefined;
+  MeditationTabs:undefined;
+  ExerciseTabs:undefined;
   Support:undefined;
   FavoritePlaylist: { 
     songs: any[];
@@ -311,28 +320,34 @@ const AppContent: React.FC = () => {
                   headerTintColor: theme.text 
                 }} 
               />
-              <MainStack.Screen 
-                name="ExerciseStack" 
-                component={ExerciseScreen} 
-                options={{ 
-                  title: 'Exercise', 
-                  headerStyle: { backgroundColor: theme.cardBackground }, 
-                  headerTintColor: theme.text 
-                }} 
-              />
+                <MainStack.Screen 
+                  name="ExerciseStack" 
+                  component={ExerciseScreen} 
+                  options={{ 
+                    title: 'Exercises', 
+                    headerStyle: { backgroundColor: theme.cardBackground }, 
+                    headerTintColor: theme.text 
+                  }} 
+                />
               <MainStack.Screen 
                 name="RelaxStack" 
                 component={RelaxScreen} 
                 options={{ 
-                  title: 'Relaxation', 
+                  title: 'Meditation', 
                   headerStyle: { backgroundColor: theme.cardBackground }, 
                   headerTintColor: theme.text 
                 }} 
               />
+
               <MainStack.Screen 
                 name="LocalChat" 
                 component={CommunityScreen} 
                 options={{ title: 'Local Chat' }} 
+              />
+              <MainStack.Screen 
+                name="About" 
+                component={About} 
+                options={{ title: 'About' }} 
               />
               <MainStack.Screen 
                 name="Emergency" 
@@ -343,6 +358,14 @@ const AppContent: React.FC = () => {
                 name="Support" 
                 component={support} 
                 options={{ title: 'Help & Support' }} 
+              />
+              <MainStack.Screen 
+                name="Meditation" 
+                component={MeditationTabNav} 
+              />
+              <MainStack.Screen 
+                name="Exercises" 
+                component={ExerciseTabNavigator} 
               />
               
               <MainStack.Screen 

@@ -11,7 +11,6 @@ import { useAuth } from './AuthContext';
 import { BASE_URL } from './config';
 import EmergencyContactButton from './Emegencybutton';
 import { useTheme } from './ThemeContext';
-import YoutubePlayer from 'react-native-youtube-iframe';
 
 const { width } = Dimensions.get('window');
 
@@ -88,6 +87,66 @@ const HomeScreen = () => {
       fetchReminders();
     }
   }, [userId]);
+
+  useEffect(() => {
+  const silentFetch = async () => {
+    if (!userId) return;
+    
+    try {
+      const headers = {
+        ...getAuthHeader(),
+        'Content-Type': 'application/json'
+      };
+
+      // Fetch all data silently without updating loading states
+      const [songsRes, gamesRes, meditationsRes, exercisesRes] = await Promise.all([
+        axios.get(`${BASE_URL}/favorites?userId=${userId}`, { headers }).catch(() => null),
+        axios.get(`${BASE_URL}/game/${userId}/favoriteGames`, { headers }).catch(() => null),
+        axios.get(`${BASE_URL}/meditation/${userId}`, { headers }).catch(() => null),
+        axios.get(`${BASE_URL}/exercise/favorites?userId=${userId}`, { headers }).catch(() => null)
+      ]);
+
+      // Update state only if data is different to prevent unnecessary re-renders
+      if (songsRes?.data) {
+        setFavoriteSongs(prev => JSON.stringify(prev) !== JSON.stringify(songsRes.data) ? songsRes.data : prev);
+      }
+      if (gamesRes?.data) {
+        setFavoriteGames(prev => JSON.stringify(prev) !== JSON.stringify(gamesRes.data) ? gamesRes.data : prev);
+      }
+      if (meditationsRes?.data) {
+        setFavoriteMeditations(prev => JSON.stringify(prev) !== JSON.stringify(meditationsRes.data) ? meditationsRes.data : prev);
+      }
+      if (exercisesRes?.data) {
+        setFavoriteExercises(prev => JSON.stringify(prev) !== JSON.stringify(exercisesRes.data) ? exercisesRes.data : prev);
+      }
+
+      // Silent reminder fetch
+      const saved = await AsyncStorage.getItem('reminders');
+      if (saved) {
+        const reminders = JSON.parse(saved);
+        const now = new Date();
+        const upcomingReminders = reminders
+          .map(reminder => {
+            const [hours, minutes] = reminder.time.split(':');
+            const reminderTime = new Date();
+            reminderTime.setHours(+hours, +minutes, 0, 0);
+            return { ...reminder, reminderDate: reminderTime };
+          })
+          .filter(reminder => reminder.reminderDate >= now)
+          .sort((a, b) => a.reminderDate - b.reminderDate)
+          .slice(0, 3);
+
+        setReminders(prev => JSON.stringify(prev) !== JSON.stringify(upcomingReminders) ? upcomingReminders : prev);
+      }
+    } catch (error) {
+      console.log('Background fetch error:', error);
+    }
+  };
+
+  const intervalId = setInterval(silentFetch, 1000); 
+
+  return () => clearInterval(intervalId);
+}, [userId]);
 
   const formatTime = (date) => {
     if (!date) return '';
@@ -321,7 +380,7 @@ const fetchReminders = async () => {
       <TouchableOpacity 
         key={meditation.meditationId || index.toString()}
         style={styles.meditationCard}
-        onPress={() => navigation.navigate('RelaxStack')}
+        onPress={() => navigation.navigate('Meditation', { screen: 'Favorites' })}
       >
         <View style={[styles.meditationColorIndicator, { backgroundColor: meditation.backgroundColor || '#4285F4' }]}>
           <Text style={styles.meditationEmoji}>{meditation.emoji || '🧘'}</Text>
@@ -337,7 +396,7 @@ const fetchReminders = async () => {
       <TouchableOpacity 
         key={exercise._id || index.toString()}
         style={styles.exerciseCard}
-        onPress={() => navigation.navigate('ExerciseStack')}
+        onPress={() => navigation.navigate('Exercises', { screen: 'Favorites' })}
       >
         <View style={[styles.exerciseColorIndicator, { backgroundColor: exercise.backgroundColor || '#EA4335' }]}>
           <Text style={styles.exerciseEmoji}>{exercise.emoji || '🏋️'}</Text>
@@ -365,7 +424,7 @@ const fetchReminders = async () => {
           <Text style={styles.emptyText}>No favorite exercises yet!</Text>
           <TouchableOpacity 
             style={styles.addButton}
-            onPress={() => navigation.navigate('ExerciseStack')}
+            onPress={() => navigation.navigate('Exercises', { screen: 'All Exercises' })}
           >
             <Text style={styles.addButtonText}>Browse Exercises</Text>
           </TouchableOpacity>
@@ -401,7 +460,7 @@ const fetchReminders = async () => {
           <Text style={styles.emptyText}>No favorite meditations yet!</Text>
           <TouchableOpacity 
             style={styles.addButton}
-            onPress={() => navigation.navigate('RelaxStack')}
+            onPress={() => navigation.navigate('Meditation', { screen: 'All Meditations' })}
           >
             <Text style={styles.addButtonText}>Browse Meditations</Text>
           </TouchableOpacity>
@@ -772,6 +831,11 @@ const fetchReminders = async () => {
     shadowOpacity: theme.isDarkMode ? 0.2 : 0.06,
     shadowRadius: 6,
     elevation: 3,
+  },
+  emoji: {
+    fontSize: 24,       // Large and friendly
+    color: '#FFA500',   // Optional: a cheerful orange color
+    textAlign: 'center',
   },
   songImageContainer: {
     borderRadius: 12,
@@ -1159,7 +1223,7 @@ const fetchReminders = async () => {
             style={[styles.moodItem, { backgroundColor: theme.cardBackground }]} 
             onPress={() => handleMoodSelection('Happy')}
           >
-            <Ionicons name="happy-outline" size={32} color="#34A853" />
+            <Text style={styles.emoji}>😊</Text>
             <Text style={[styles.moodText, { color: theme.text }]}>Happy</Text>
           </TouchableOpacity>
 
@@ -1167,7 +1231,7 @@ const fetchReminders = async () => {
             style={[styles.moodItem, { backgroundColor: theme.cardBackground }]}
             onPress={() => handleMoodSelection('Sad')}
           >
-            <Ionicons name="sad-outline" size={32} color="#4285F4" />
+             <Text style={styles.emoji}>😔</Text>
             <Text style={[styles.moodText, { color: theme.text }]}>Sad</Text>
           </TouchableOpacity>
 
@@ -1175,7 +1239,7 @@ const fetchReminders = async () => {
             style={[styles.moodItem, { backgroundColor: theme.cardBackground }]}
             onPress={() => handleMoodSelection('Angry')}
           >
-            <Ionicons name="flash-outline" size={32} color="#FBBC05" />
+             <Text style={styles.emoji}>😡</Text>
             <Text style={[styles.moodText, { color: theme.text }]}>Angry</Text>
           </TouchableOpacity>
 
@@ -1183,7 +1247,7 @@ const fetchReminders = async () => {
             style={[styles.moodItem, { backgroundColor: theme.cardBackground }]}
             onPress={() => handleMoodSelection('Tired')}
           >
-            <Ionicons name="bed-outline" size={32} color="#EA4335" />
+             <Text style={styles.emoji}>🥱</Text>
             <Text style={[styles.moodText, { color: theme.text }]}>Tired</Text>
           </TouchableOpacity>
 
@@ -1191,7 +1255,7 @@ const fetchReminders = async () => {
             style={[styles.moodItem, { backgroundColor: theme.cardBackground }]}
             onPress={() => handleMoodSelection('Anxious')}
           >
-            <Ionicons name="heart-dislike-outline" size={32} color="#FBBC05" />
+             <Text style={styles.emoji}>🥲</Text>
             <Text style={[styles.moodText, { color: theme.text }]}>Anxious</Text>
           </TouchableOpacity>
         </View>
