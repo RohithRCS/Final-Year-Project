@@ -133,7 +133,7 @@ const ArtistMusicPlayer = () => {
   const fetchFavorites = async () => {
     try {
       setIsLoadingFavorites(true);
-      const response = await axios.get(`https://elder-assist-neww.onrender.com/api/favorites?userId=${currentUser.userId}`, {
+      const response = await axios.get(`https://final-year-project-5wgk.onrender.com/api/favorites?userId=${currentUser.userId}`, {
         headers: getAuthHeader()
       });
       
@@ -184,7 +184,7 @@ const ArtistMusicPlayer = () => {
     
     try {
       if (favorites.has(songId)) {
-        await axios.delete(`https://elder-assist-neww.onrender.com/api/favorites/${songId}`, {
+        await axios.delete(`https://final-year-project-5wgk.onrender.com/api/favorites/${songId}`, {
           headers: getAuthHeader(),
           data: { userId: currentUser.userId }
         });
@@ -195,7 +195,7 @@ const ArtistMusicPlayer = () => {
           return newFavorites;
         });
       } else {
-        await axios.post(`https://elder-assist-neww.onrender.com/api/favorites/${songId}`, {
+        await axios.post(`https://final-year-project-5wgk.onrender.com/api/favorites/${songId}`, {
           userId: currentUser.userId
         }, {
           headers: getAuthHeader()
@@ -229,7 +229,7 @@ const ArtistMusicPlayer = () => {
   const fetchSongs = async () => {
     try {
       setIsLoadingSongs(true);
-      const response = await axios.get('https://elder-assist-neww.onrender.com/api/songs/');
+      const response = await axios.get('https://final-year-project-5wgk.onrender.com/api/songs/');
       
       const formattedSongs = response.data.map(song => ({
         id: song._id,

@@ -411,7 +411,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://192.168.24.81:1234/api/favorites?userId=${currentUser.userId}`,
+        `https://final-year-project-5wgk.onrender.com/api/favorites?userId=${currentUser.userId}`,
         { headers: getAuthHeader() }
       );
       
@@ -442,7 +442,7 @@ const FavoritePlaylist = ({ route, navigation }) => {
     }
     
     try {
-      await axios.delete(`http://192.168.24.81:1234/api/favorites/${songId}`, {
+      await axios.delete(`https://final-year-project-5wgk.onrender.com/api/favorites/${songId}`, {
         headers: getAuthHeader(),
         data: { userId: currentUser.userId }
       });

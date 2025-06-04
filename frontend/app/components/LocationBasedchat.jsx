@@ -100,7 +100,7 @@ useEffect(() => {
 
   const getWebSocketUrl = () => {
     if (__DEV__) {
-      return 'ws://192.168.24.81:1234/ws/localchat'; // Change this to your local IP
+      return 'wss://final-year-project-5wgk.onrender.com/ws/localchat'; // Change this to your local IP
     }
     return BASE_URL.replace('http', 'ws') + '/ws/localchat';
   };
