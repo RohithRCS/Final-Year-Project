@@ -32,6 +32,11 @@ Elderly individuals often face challenges such as loneliness, forgetfulness and 
 
 ---
 
+## App Screenshots  
+Refer to the [App-Screenshots](./App-Screenshots) folder for the output screenshots of my project.
+
+---
+
 
 
 ## Features
