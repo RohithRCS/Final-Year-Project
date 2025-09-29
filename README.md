@@ -43,7 +43,7 @@ Elderly individuals often face challenges such as loneliness, forgetfulness and 
    - First-time users provide preferences for breakfast, lunch and dinner timings.  
 
    - The system schedules medication reminders *before and after meals* (default 30-minute intervals).
-
+<img src="App-Screenshots/Preferences.png" width="300">
 
 
 2. *Reminders*  
