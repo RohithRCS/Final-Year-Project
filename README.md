@@ -32,10 +32,6 @@ Elderly individuals often face challenges such as loneliness, forgetfulness and 
 
 ---
 
-## App Screenshots  
-Refer to the [App-Screenshots](./App-Screenshots) folder for the output screenshots of my project.
-
----
 
 
 
@@ -148,3 +144,10 @@ Refer to the [App-Screenshots](./App-Screenshots) folder for the output screensh
 - Advanced AI for predictive health insights  
 - Expanded social features with group activities and events  
 - Multi-language support for broader accessibility
+
+---
+
+## Output
+Refer to the [App-Screenshots](./App-Screenshots) folder for the output screenshots of my project.
+
+---
