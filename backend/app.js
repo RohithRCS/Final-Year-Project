@@ -21,7 +21,7 @@ const transcribeRouter = require('./controllers/transcribe')
 const setupWebSocketServer = require('./websocket');
 
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb+srv://shakthi1112:shakthi%401112@cluster0.oera9.mongodb.net/Companion?retryWrites=true&w=majority&appName=Cluster0")
+mongoose.connect("mongodburl")
   .then(() => {
     logger.info('Connected to MongoDB');
   })
