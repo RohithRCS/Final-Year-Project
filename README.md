@@ -58,7 +58,7 @@ Elderly individuals often face challenges such as loneliness, forgetfulness and 
 
 3. *Voice-Enabled Chatbot*  
 
-   - AI-powered conversational agent for companionship, queries and emotional support.
+   - AI-powered conversational chatbot for companionship, queries and emotional support.
 
 
 
