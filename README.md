@@ -53,13 +53,13 @@ Elderly individuals often face challenges such as loneliness, forgetfulness and 
    - Water intake notifications  
 
    - Sleep schedule alerts  
-
+<img src="App-Screenshots/Reminder.png" width="300">
 
 
 3. *Voice-Enabled Chatbot*  
 
    - AI-powered conversational chatbot for companionship, queries and emotional support.
-
+<img src="App-Screenshots/Chatbot.png" width="300">
 
 
 4. *Activity Section*  
@@ -71,7 +71,7 @@ Elderly individuals often face challenges such as loneliness, forgetfulness and 
    - *Tips* – Health and wellness suggestions  
 
    - *Exercises & Meditation* – Guided routines to promote physical and mental well-being  
-
+<img src="App-Screenshots/Activities & Games.png" width="300">
 
 
 5. *Community Module*  
@@ -79,7 +79,7 @@ Elderly individuals often face challenges such as loneliness, forgetfulness and 
    - Automatic addition of users within a 1.5 km radius to local groups  
 
    - Voice note communication for social interaction and peer support  
-
+<img src="App-Screenshots/Community.png" width="300">
 
 
 ---
