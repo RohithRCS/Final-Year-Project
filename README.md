@@ -14,15 +14,15 @@
 
 
 
-Elderly individuals often face challenges such as loneliness, forgetfulness, and difficulty managing their health. This mobile application provides a holistic approach to address these issues through:
+Elderly individuals often face challenges such as loneliness, forgetfulness and difficulty managing their health. This mobile application provides a holistic approach to address these issues through:
 
 
 
 - *Companion Chatbot* – Engages users in meaningful conversations to reduce isolation and stimulate cognitive activity.
 
-- *Healthcare Reminders* – Personalized notifications for medications, water intake, and sleep.
+- *Healthcare Reminders* – Personalized notifications for medications, water intake and sleep.
 
-- *Activity & Wellness* – Interactive features including games, music, exercise routines, meditation, and wellness tips.
+- *Activity & Wellness* – Interactive features including games, music, exercise routines, meditation and wellness tips.
 
 - *Community Connectivity* – Connects users within a 1.5 km radius with voice notes and group interaction.
 
@@ -40,7 +40,7 @@ Elderly individuals often face challenges such as loneliness, forgetfulness, and
 
 1. *User Preferences Setup*  
 
-   - First-time users provide preferences for breakfast, lunch, and dinner timings.  
+   - First-time users provide preferences for breakfast, lunch and dinner timings.  
 
    - The system schedules medication reminders *before and after meals* (default 30-minute intervals).
 
@@ -58,7 +58,7 @@ Elderly individuals often face challenges such as loneliness, forgetfulness, and
 
 3. *Voice-Enabled Chatbot*  
 
-   - AI-powered conversational agent for companionship, queries, and emotional support.
+   - AI-powered conversational agent for companionship, queries and emotional support.
 
 
 
@@ -114,7 +114,7 @@ Elderly individuals often face challenges such as loneliness, forgetfulness, and
 
 - *Backend* – Node.js, Express, MongoDB  
 
-- *AI & NLP* – Chatbot with conversational AI, sentiment analysis  
+- *AI & NLP* – Gemini AI
 
 - *Notifications* – Expo Notifications for reminders  
 
@@ -131,9 +131,9 @@ Elderly individuals often face challenges such as loneliness, forgetfulness, and
 ## Usage
 
 - First-time users enter meal timings for personalized reminders.  
-- Navigate to the *Reminders* tab to view or update medication, water, and sleep notifications.  
+- Navigate to the *Reminders* tab to view or update medication, water and sleep notifications.  
 - Use the *Chatbot* for voice-assisted conversations.  
-- Explore the *Activity* section for games, music, exercises, and wellness tips.  
+- Explore the *Activity* section for games, music, exercises and wellness tips.  
 - Join the *Community* module to interact with nearby users and send voice notes.  
 - Emergency alerts notify caregivers or family members for immediate assistance.  
 
@@ -143,6 +143,3 @@ Elderly individuals often face challenges such as loneliness, forgetfulness, and
 - Advanced AI for predictive health insights  
 - Expanded social features with group activities and events  
 - Multi-language support for broader accessibility
-   ```bash
-
-   git clone <repository_url>
