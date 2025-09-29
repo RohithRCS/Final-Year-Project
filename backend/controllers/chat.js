@@ -5,7 +5,7 @@ const User = require("../models/user");
 const jwt = require('jsonwebtoken');
 
 // Initialize Google Generative AI
-const genAI = new GoogleGenerativeAI("AIzaSyC8DAChYdFPif4RgQSYVkneoMHKDvnjgrw");
+const genAI = new GoogleGenerativeAI("API Key");
 
 // POST endpoint to send a message
 router.post("/", async (req, res) => {
